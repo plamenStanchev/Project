@@ -26,6 +26,12 @@
 
         public DbSet<Setting> Settings { get; set; }
 
+        public DbSet<Comment> Comments { get; set; }
+
+        public DbSet<Event> Events { get; set; }
+
+        public DbSet<ApplicationUserEvent> ApplicationUserEvents { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -47,6 +53,33 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Event>().HasOne(e => e.Owner)
+                .WithMany(u => u.CreatedEvents)
+                .HasForeignKey(e => e.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Event>().HasMany(e => e.Comments)
+                .WithOne(c => c.Event)
+                .HasForeignKey(c => c.EventId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Event>().HasMany(e => e.AtendingUsers)
+                .WithOne(au => au.Event)
+                .HasForeignKey(au => au.EventId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Comment>().HasOne(c => c.Author)
+                .WithMany(a => a.Comments)
+                .HasForeignKey(c => c.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ApplicationUser>().HasMany(au => au.ApplicationUserEvents)
+                .WithOne(aue => aue.ApplicationUser)
+                .HasForeignKey(aue => aue.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ApplicationUserEvent>().HasKey(aue => new { aue.ApplicationUserId, aue.EventId });
+
             // Needed for Identity models configuration
             base.OnModelCreating(builder);
 

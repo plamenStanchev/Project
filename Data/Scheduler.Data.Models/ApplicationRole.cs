@@ -3,9 +3,9 @@ namespace Scheduler.Data.Models
 {
     using System;
 
-    using Scheduler.Data.Common.Models;
-
     using Microsoft.AspNetCore.Identity;
+
+    using Scheduler.Data.Common.Models;
 
     public class ApplicationRole : IdentityRole, IAuditInfo, IDeletableEntity
     {

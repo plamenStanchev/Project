@@ -16,6 +16,9 @@ namespace Scheduler.Data.Models
             this.Roles = new HashSet<IdentityUserRole<string>>();
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
+            this.Comments = new HashSet<Comment>();
+            this.ApplicationUserEvents = new HashSet<ApplicationUserEvent>();
+            this.CreatedEvents = new HashSet<Event>();
         }
 
         // Audit info
@@ -27,6 +30,12 @@ namespace Scheduler.Data.Models
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
+
+        public ICollection<Event> CreatedEvents { get; set; }
+
+        public ICollection<ApplicationUserEvent> ApplicationUserEvents { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 
