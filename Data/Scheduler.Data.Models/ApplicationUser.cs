@@ -3,6 +3,7 @@ namespace Scheduler.Data.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     using Scheduler.Data.Common.Models;
 
@@ -30,6 +31,17 @@ namespace Scheduler.Data.Models
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
+
+        [Required]
+        [MinLength(3)]
+        [MaxLength(30)]
+        public string FistName { get; set; }
+
+        [Required]
+        [MinLength(3)]
+        [MaxLength(30)]
+        public string LastName { get; set; }
+
 
         public ICollection<Event> CreatedEvents { get; set; }
 
