@@ -44,4 +44,8 @@
     <ProjectReference Include="..\Scheduler.Data.Models\Scheduler.Data.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\ApplicationRepositoris\" />
+  </ItemGroup>
+
 </Project>
