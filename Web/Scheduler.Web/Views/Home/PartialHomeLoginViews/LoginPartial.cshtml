@@ -1,0 +1,45 @@
+﻿@model Scheduler.Web.ViewModels.UserViewModel.UserLoginViewModel
+
+<div class="col-sm-5">
+
+    <div class="form-box">
+        <div class="form-top">
+            <div class="form-top-left">
+                <h3>Login to our site</h3>
+                <p>Enter username and password to log on:</p>
+            </div>
+            <div class="form-top-right">
+                <i class="fa fa-lock"></i>
+            </div>
+        </div>
+        <div class="form-bottom">
+            <form role="form" action="" method="post" class="login-form">
+                <div class="form-group">
+                    <label class="sr-only" for="form-username">Username</label>
+                    <input asp-for="Email" type="text" name="Email" placeholder="Email..." class="form-username form-control" id="Email">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="form-password">Password</label>
+                    <input asp-for="Password" type="password" name="Password" placeholder="Password..." class="form-password form-control" id="Password">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn" asp-controller="Account" asp-action="Login">Sign in!</button>
+            </form>
+            <div class="social-login">
+                <h3>...or login with:</h3>
+                <div class="social-login-buttons">
+                    <a class="btn btn-link-2" href="#">
+                        <i class="fa fa-facebook"></i> Facebook
+                    </a>
+                    <a class="btn btn-link-2" href="#">
+                        <i class="fa fa-twitter"></i> Twitter
+                    </a>
+                    <a class="btn btn-link-2" href="#">
+                        <i class="fa fa-google-plus"></i> Google Plus
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

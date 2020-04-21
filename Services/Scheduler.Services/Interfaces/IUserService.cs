@@ -6,12 +6,13 @@
 
     public interface IUserService
     {
-        public Task<ApplicationUser> Register(UserViewModel userViewModel);
+        public Task<ApplicationUser> Register(UserRegisterViewModel userViewModel);
 
-        public UserViewModel GetUserModel(string id);
+        public UserRegisterViewModel GetUserModel(string id);
 
         public ApplicationUser GetAppUser(string id);
 
+        public ApplicationUser GetAppUser(UserLoginViewModel userViewModel);
 
     }
 }

@@ -31,13 +31,13 @@
                 .FirstOrDefault();
         }
 
-        public UserViewModel GetUserModel(string id)
+        public UserRegisterViewModel GetUserModel(string id)
         {
             throw new System.NotImplementedException();
         }
 
 
-        public async Task<ApplicationUser> Register(UserViewModel userViewModel)
+        public async Task<ApplicationUser> Register(UserRegisterViewModel userViewModel)
         {
             var appuser = new ApplicationUser()
             {
@@ -57,7 +57,21 @@
             {
                 return null;
             }
-            return default;
+        }
+
+        public ApplicationUser GetAppUser(UserLoginViewModel userViewModel)
+        {
+            var user = this.efDeletableRepositiry.All()
+                .Where(u => u.Email == userViewModel.Email && u.IsDeleted == false)
+                .FirstOrDefault();
+            if (user != null)
+            {
+                return user;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

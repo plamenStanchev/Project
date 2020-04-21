@@ -6,7 +6,7 @@
     using Scheduler.Services.Mapping;
  
 
-    public class UserViewModel : IMapTo<ApplicationUser>
+    public class UserRegisterViewModel : IMapTo<ApplicationUser>
     {
         [Required]
         [MaxLength(50)]
