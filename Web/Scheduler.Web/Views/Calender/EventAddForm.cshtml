@@ -1,0 +1,35 @@
+﻿@model Scheduler.Web.ViewModels.EventViewModel.EventAddViewModel
+
+    <head>
+    </head>
+        <div class="form-bottom">
+            <form role="form" action="" method="post" class="">
+                <div class="form-group">
+                    <input asp-for="Name" type="text" placeholder="EventName" id="EventName">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Date" type="date" name="Date" placeholder="Date..." class="" id="Date">
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Description" type="text" name="Description" placeholder="Description..." class="" id="Description" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Start" type="datetime" name="Start" placeholder="Start...." class="" id="Start" />
+                    <span asp-validation-for="Start" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="End" type="datetime" class="" placeholder="End...." id="End" />
+                    <span asp-validation-for="End" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Url" type="url" name="Url" class="" id="Url" />
+                    <span asp-validation-for="Url" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn" asp-controller="Event" asp-action="Create">Create</button>
+            </form>
+
+        </div>

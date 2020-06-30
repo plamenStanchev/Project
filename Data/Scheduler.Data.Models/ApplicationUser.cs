@@ -35,7 +35,7 @@ namespace Scheduler.Data.Models
         [Required]
         [MinLength(3)]
         [MaxLength(30)]
-        public string FistName { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
         [MinLength(3)]

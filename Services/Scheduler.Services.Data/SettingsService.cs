@@ -20,10 +20,5 @@
         {
             return this.settingsRepository.All().Count();
         }
-
-        public IEnumerable<T> GetAll<T>()
-        {
-            return this.settingsRepository.All().To<T>().ToList();
-        }
     }
 }

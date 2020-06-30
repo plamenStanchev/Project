@@ -3,10 +3,8 @@
     using System.ComponentModel.DataAnnotations;
 
     using Scheduler.Data.Models;
-    using Scheduler.Services.Mapping;
- 
 
-    public class UserRegisterViewModel : IMapTo<ApplicationUser>
+    public class UserRegisterViewModel
     {
         [Required]
         [MaxLength(50)]

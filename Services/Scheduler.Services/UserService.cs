@@ -1,53 +1,44 @@
 ﻿namespace Scheduler.Services
 {
-    using AutoMapper;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Scheduler.Data.Common.Repositories;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
+    using Scheduler.Services.Mapping;
     using Scheduler.Web.ViewModels.UserViewModel;
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class UserService : IUserService
     {
         private readonly IDeletableEntityRepository<ApplicationUser> efDeletableRepositiry;
-        private UserManager<ApplicationUser> userManager;
+        private readonly IMapper mapper;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public UserService(
             IDeletableEntityRepository<ApplicationUser> efDeletableEntityRepository,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IMapper mapper)
         {
             this.userManager = userManager;
             this.efDeletableRepositiry = efDeletableEntityRepository;
+            this.mapper = mapper;
         }
 
-        public ApplicationUser GetAppUser(string id)
+        public async Task<ApplicationUser> GetAppUser(string id)
         {
-            return this.efDeletableRepositiry
+            return await this.efDeletableRepositiry
                 .All().Where(u => u.Id == id)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
-
-        public UserRegisterViewModel GetUserModel(string id)
-        {
-            throw new System.NotImplementedException();
-        }
-
 
         public async Task<ApplicationUser> Register(UserRegisterViewModel userViewModel)
         {
-            var appuser = new ApplicationUser()
-            {
-                UserName = $"{userViewModel.FirstName} {userViewModel.LastName}",
-                FistName = userViewModel.FirstName,
-                LastName = userViewModel.LastName,
-                Email = userViewModel.Email,
-                CreatedOn = DateTime.UtcNow,
-            };
-            //var passHash = this.userManager.PasswordHasher.HashPassword(appuser, userViewModel.Password);
+            var appuser = this.mapper.MapAppUser(userViewModel);
+
             var result = await this.userManager.CreateAsync(appuser, userViewModel.Password);
             if (result.Succeeded)
             {
@@ -59,11 +50,11 @@
             }
         }
 
-        public ApplicationUser GetAppUser(UserLoginViewModel userViewModel)
+        public async Task<ApplicationUser> GetAppUser(UserLoginViewModel userViewModel)
         {
-            var user = this.efDeletableRepositiry.All()
+            var user = await this.efDeletableRepositiry.All()
                 .Where(u => u.Email == userViewModel.Email && u.IsDeleted == false)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
             if (user != null)
             {
                 return user;

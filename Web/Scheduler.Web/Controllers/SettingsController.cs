@@ -24,9 +24,7 @@
 
         public IActionResult Index()
         {
-            var settings = this.settingsService.GetAll<SettingViewModel>();
-            var model = new SettingsListViewModel { Settings = settings };
-            return this.View(model);
+            return this.View();
         }
 
         public async Task<IActionResult> InsertSetting()

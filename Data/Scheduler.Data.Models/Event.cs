@@ -22,7 +22,18 @@
         [MaxLength(500)]
         public string Description { get; set; }
 
+        [Required]
+        public DateTime Start { get; set; }
+
+        [Required]
+        public DateTime End { get; set; }
+
         public DateTime Date { get; set; }
+
+        public bool AllDay { get; set; }
+
+        [Url]
+        public string Url { get; set; }
 
         [Required]
         public string OwnerId { get; set; }

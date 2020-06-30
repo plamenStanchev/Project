@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
         <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="assets/css/form-elements.css"
+        <link rel="stylesheet" href="assets/css/form-elements.css" />
         <link rel="stylesheet" href="assets/css/style.css">
 
         <link rel="shortcut icon" href="assets/ico/favicon.png">
@@ -18,60 +18,72 @@
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
         <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
     </head>
-<div class="text-center">
-    <h1 class="display-4">Welcome to @GlobalConstants.SystemName!</h1>
-    <div>
+    <body>
 
-        <!-- Top content -->
-        @if (!this.User.Identity.IsAuthenticated)
-         {
-            <div class="top-content">
+        <div class="text-center">
+            <h2 class="display-4">Welcome to @GlobalConstants.SystemName!</h2>
 
-                <div class="inner-bg">
-                    <div class="container">
+            <div id="IndexDiv" class="IndexDiv">
 
-                        <div class="row">
-                            <div class="col-sm-8 col-sm-offset-2 text">
-                                <div class="description">
+                <!-- Top content -->
+                @if (!this.User.Identity.IsAuthenticated)
+                {
+                    <div class="top-content">
 
-                                </div>
-                            </div>
-                        </div>
+                        <div class="inner-bg">
+                            @*<div class="container">*@
+                                @*<div class="row">*@
 
-                        <div class="row"> 
-                            
-                             @{ await Html.RenderPartialAsync("../../Views/Home/PartialHomeLoginViews/LoginPartial");}
-                             @{ await Html.RenderPartialAsync("../../Views/Home/PartialHomeLoginViews/RegisterPartial");}
-                        </div>
+                                    @{ await Html.RenderPartialAsync("../../Views/Home/PartialHomeLoginViews/LoginPartial");}
+                                    @{ await Html.RenderPartialAsync("../../Views/Home/PartialHomeLoginViews/RegisterPartial");}
+                                @*</div>*@
 
-                        </div>
+                            @*</div>*@
 
                             <div class="col-sm-4 middle-border"></div>
-                            <div class="col-sm-4"></div>
-
-                            
-                </div>
-
-             </div>
-
-         }
+                            @*<div class="col-sm-4"></div>*@
 
 
-        <!-- Footer -->
-        
+                        </div>
 
-        <!-- Javascript -->
-        
-        <script src="assets/js/jquery-1.11.1.min.js"></script>
-        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-        <script src="assets/js/jquery.backstretch.min.js"></script>
-        @*<script src="assets/js/scripts.js"></script>*@
-        <script src="Areas/Identity/Pages/Account/_ValidationScriptsPartial"> </script>
-         
+                    </div>
 
-        <!--[if lt IE 10]>
-        <script src="assets/js/placeholder.js"></script>
-    <![endif]-->
+                }
+                else
+                {
+                    <div class="col row-cols-sm-4 border-left-4">
+                        @{
+                            await Html.RenderPartialAsync("../../Views/Calender/PartialCallenderView");
+                        }
+                    </div>
 
-    </div>
-</div>
+                    <div class="">
+                        @{
+                            await Html.RenderPartialAsync("../../Views/Calender/EventAddForm");
+                        }
+                    </div>
+
+                }
+
+
+                <!-- Footer -->
+                <!-- Javascript -->
+                @*<script src="assets/js/jquery-1.11.1.min.js"></script>*@
+                @*<script src="assets/bootstrap/js/bootstrap.min.js"></script>*@
+                <script src="assets/js/jquery.backstretch.min.js"></script>
+                @*<script src="assets/js/scripts.js"></script>*@
+                <script src="Areas/Identity/Pages/Account/_ValidationScriptsPartial"></script>
+
+                @if (this.User.Identity.IsAuthenticated)
+                 {
+                    <style>
+                         .IndexDiv {
+                            display: flex
+                         }
+                    </style>
+                 }
+
+            </div>
+        </div>
+      
+    </body>

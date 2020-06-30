@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Scheduler.Data.Models\Scheduler.Data.Models.csproj" />
-    <ProjectReference Include="..\..\Services\Scheduler.Services.Mapping\Scheduler.Services.Mapping.csproj" />
   </ItemGroup>
 
 </Project>

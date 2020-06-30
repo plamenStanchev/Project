@@ -24,6 +24,7 @@
     using Scheduler.Services.Interfaces;
     using Scheduler.Services;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     public class Startup
     {
@@ -57,6 +58,12 @@
                     });
             services.AddRazorPages();
 
+            services.AddControllersWithViews().AddJsonOptions(
+                options =>
+                {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                });
+
             services.AddSingleton(this.configuration);
 
             services.Configure<IdentityOptions>(options =>
@@ -77,14 +84,14 @@
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IEventService, EventService>();
+            services.AddSingleton<IMapper, Mapper>();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
-
             // Seed data on application startup
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {

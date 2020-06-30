@@ -1,10 +1,8 @@
-﻿namespace Scheduler.Data.Models
+﻿namespace Scheduler.Web.ViewModels.Comments
 {
     using System.ComponentModel.DataAnnotations;
 
-    using Scheduler.Data.Common.Models;
-
-    public class Comment : BaseDeletableModel<int>
+    public class CommentDto
     {
         [Required]
         [MaxLength(50)]
@@ -17,11 +15,8 @@
         [Required]
         public string AuthorId { get; set; }
 
-        public ApplicationUser Author { get; set; }
-
         [Required]
         public string EventId { get; set; }
 
-        public Event Event { get; set; }
     }
 }
