@@ -58,6 +58,9 @@
             if (result.IsCompletedSuccessfully)
             {
                 await this.efDeletableRepositiryEvent.SaveChangesAsync();
+
+                await this.AddUserToEvent(@event.OwnerId, @event.Id);
+
                 return true;
             }
 
@@ -89,8 +92,8 @@
             var endDate = DateTime.Parse(end, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
             var events = await this.efDeletableRepositiryEvent.All()
-                .Where(e => e.Start.CompareTo(startDate) <= 0
-                 || e.End.CompareTo(endDate) >= 0)
+                .Where(e => e.Start.CompareTo(startDate) >= 0
+                 || e.End.CompareTo(endDate) <= 0)
                 .ToListAsync();
 
             return events;

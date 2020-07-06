@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Scheduler.Data.Models;
@@ -12,7 +11,7 @@
     using Scheduler.Web.ViewModels.EventViewModel;
 
     //TODo  move validation to Validation Service
-    public class EventController : BaseController
+    public class EventController : ControllerBase
     {
 
         private IEventService eventService;
@@ -53,6 +52,12 @@
             return this.Ok(events);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetEventsForUser()
+        {
+            var evetns = await this.eventService.GetAllEventsForUser(this.userManager.GetUserId(this.User));
+            return this.Ok(evetns);
+        }
 
         public IActionResult Edit()
         {

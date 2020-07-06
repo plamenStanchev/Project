@@ -42,7 +42,7 @@
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginViewModel userViewModel)
         {
-            var appUser = this.userService.GetAppUser(userViewModel);
+            var appUser = await this.userService.GetAppUser(userViewModel);
             if (appUser != null)
             {
                 var result = await this.signInManager.CheckPasswordSignInAsync(appUser, userViewModel.Password, false);

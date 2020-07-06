@@ -11,7 +11,6 @@
     <script src="lib/fullcalendar/list/main.js"></script>
 
     <script>
-
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
 
@@ -23,6 +22,7 @@
                     right: 'dayGridMonth,dayGridWeek,dayGridDay,list'
                 },
                 selectable: true,
+                events: "/Event/GetEvents",
             });
             calendar.render();
         });
