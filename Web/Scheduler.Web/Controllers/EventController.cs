@@ -11,7 +11,7 @@
     using Scheduler.Web.ViewModels.EventViewModel;
 
     //TODo  move validation to Validation Service
-    public class EventController : ControllerBase
+    public class EventController : Controller
     {
 
         private IEventService eventService;
@@ -30,12 +30,21 @@
             var result = await this.eventService.CreateEvent(eventAddViewModel);
             if (result)
             {
-                return this.Ok(result);
+                return this.Redirect("/");
             }
             else
             {
                 return this.Problem();
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(string evnetId)
+        {
+            var @event = await this.eventService.GetEvent(evnetId);
+
+            return this.Redirect("/");
+            //return this.View(@event);
         }
 
         [HttpGet]

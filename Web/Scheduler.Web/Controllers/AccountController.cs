@@ -5,6 +5,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
+    using Scheduler.Web.ViewModels;
     using Scheduler.Web.ViewModels.UserViewModel;
     using System.Reflection;
     using System.Threading.Tasks;
@@ -34,7 +35,7 @@
             }
             else
             {
-                return this.Redirect("/");
+                return this.Redirect(Url);
             }
         }
 
@@ -49,7 +50,7 @@
                 if (result.Succeeded)
                 {
                     await this.signInManager.SignInAsync(appUser, false);
-                    return this.Redirect("/");
+                    return this.Redirect(Url);
                 }
             }
             else

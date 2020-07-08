@@ -44,33 +44,33 @@
         }
 
         public Event MapEvent(EventAddViewModel eventDto)
-         {
+        {
             return new Event()
             {
                 Name = eventDto.Name,
                 Description = eventDto.Description,
-                Start = eventDto.Start,
-                End = eventDto.End,
-                Date = eventDto.Date,
+
+                Start = new DateTime(
+                year: eventDto.StartDate.Year,
+                month: eventDto.StartDate.Month,
+                day: eventDto.StartDate.Day,
+                hour: eventDto.StartTime.Hour,
+                minute: eventDto.StartTime.Minute,
+                second: 0),
+
+                End = new DateTime(
+                year: eventDto.EndDate.Year,
+                month: eventDto.EndDate.Month,
+                day: eventDto.EndDate.Day,
+                hour: eventDto.EndDate.Hour,
+                minute: eventDto.EndDate.Minute,
+                second: 0),
+
                 AllDay = eventDto.AllDay,
                 Url = eventDto.Url,
                 OwnerId = eventDto.OwnerId,
             };
-         }
+        }
 
-        public EventAddViewModel MapEventDto(Event @event)
-         {
-            return new EventAddViewModel()
-            {
-                Name = @event.Name,
-                AllDay = @event.AllDay,
-                Description = @event.Description,
-                Start = @event.Start,
-                End = @event.End,
-                Date = @event.Date,
-                Url = @event.Url,
-                OwnerId = @event.OwnerId,
-            };
-         }
     }
 }

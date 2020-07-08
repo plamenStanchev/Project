@@ -15,18 +15,20 @@
     // to Add loger
     public class EventService : IEventService
     {
+        private readonly UriBuilder uriBuilder;
         private readonly IDeletableEntityRepository<Event> efDeletableRepositiryEvent;
         private readonly IMapper mapper;
         private readonly IRepository<ApplicationUserEvent> efRepositiryEventAppUser;
 
         public EventService(IDeletableEntityRepository<Event> efDeletableRepositiry, 
             IMapper mapper,
-            IRepository<ApplicationUserEvent> repository
-            )
+            IRepository<ApplicationUserEvent> repository,
+            UriBuilder uriBuilder)
         {
             this.efDeletableRepositiryEvent = efDeletableRepositiry;
             this.mapper = mapper;
             this.efRepositiryEventAppUser = repository;
+            this.uriBuilder = uriBuilder;
         }
 
         // todo RefactorNames
@@ -53,6 +55,7 @@
         public async Task<bool> CreateEvent(EventAddViewModel eventAdd)
         {
             Event @event = this.mapper.MapEvent(eventAdd);
+            @event.Url = this.BuildUrlForEvent(@event.Id);
             var result = this.efDeletableRepositiryEvent
                 .AddAsync(@event);
             if (result.IsCompletedSuccessfully)
@@ -70,7 +73,8 @@
         public async Task<IEnumerable<Event>> GetAllEventsForUser(string userId)
         {
             var events = await this.efRepositiryEventAppUser.All()
-                .Where(ae => ae.ApplicationUserId == userId)
+                .Where(ae => ae.ApplicationUserId == userId
+                && ae.Event.IsDeleted == false)
                 .Select(ae => ae.Event)
                 .ToListAsync();
 
@@ -80,7 +84,8 @@
         public async Task<Event> GetEvent(string eventId)
         {
             var @event = await this.efDeletableRepositiryEvent.All()
-                .Where(e => e.Id == eventId)
+                .Where(e => e.Id == eventId
+                && e.IsDeleted == false)
                  .FirstOrDefaultAsync();
 
             return @event;
@@ -93,10 +98,31 @@
 
             var events = await this.efDeletableRepositiryEvent.All()
                 .Where(e => e.Start.CompareTo(startDate) >= 0
-                 || e.End.CompareTo(endDate) <= 0)
+                 || (e.End.CompareTo(endDate) <= 0
+                 && (e.IsDeleted == false)))
                 .ToListAsync();
 
             return events;
+        }
+
+        public async Task DeleteEvent(string eventId)
+        {
+            var @event = new Event()
+            {
+                Id = eventId,
+            };
+
+            this.efDeletableRepositiryEvent.Delete(@event);
+            await this.efDeletableRepositiryEvent.SaveChangesAsync();
+        }
+
+        private string BuildUrlForEvent(string paramId)
+        {
+            this.uriBuilder.Path = "Event/Details";
+            this.uriBuilder.Query = $"eventId={paramId}";
+            this.uriBuilder.Scheme = "https";
+            this.uriBuilder.Port = 44319;
+            return this.uriBuilder.ToString();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿@model Scheduler.Web.ViewModels.EventViewModel.EventAddViewModel
-
+@*Event view model shdu va prop start date start time same for end .Have to add new model and fix the mapings*@
     <head>
     </head>
         <div class="form-bottom">
@@ -9,26 +9,27 @@
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input asp-for="Date" type="date" name="Date" placeholder="Date..." class="" id="Date">
-                    <span asp-validation-for="Date" class="text-danger"></span>
-                </div>
-                <div class="form-group">
                     <input asp-for="Description" type="text" name="Description" placeholder="Description..." class="" id="Description" />
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input asp-for="Start" type="datetime" name="Start" placeholder="Start...." class="" id="Start" />
-                    <span asp-validation-for="Start" class="text-danger"></span>
+                    <input asp-for="StartDate" type="date" name="StartDate" placeholder="StartDate..." class="" id="Date">
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input asp-for="End" type="datetime" class="" placeholder="End...." id="End" />
-                    <span asp-validation-for="End" class="text-danger"></span>
+                    <label>Start Time..</label>
+                    <input asp-for="StartTime" type="time" name="StatTime" placeholder="Date..." class="" id="Date">
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input asp-for="Url" type="url" name="Url" class="" id="Url" />
-                    <span asp-validation-for="Url" class="text-danger"></span>
+                    <input asp-for="EndDate" type="date" name="EndDate" placeholder="EndDate...." class="" id="Start" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
                 </div>
-
+                <div class="form-group">
+                    <label>End Time.. </label>
+                    <input asp-for="EndTime" type="time" class="" placeholder="End...." id="End" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
                 <button type="submit" class="btn" asp-controller="Event" asp-action="Create">Create</button>
             </form>
 

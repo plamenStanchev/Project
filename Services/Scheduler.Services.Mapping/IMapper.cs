@@ -8,9 +8,8 @@
     public interface IMapper
     {
         public ApplicationUser MapAppUser(UserRegisterViewModel userRegisterViewModel);
-        public Event MapEvent(EventAddViewModel eventDto);
 
-        public EventAddViewModel MapEventDto(Event @event);
+        public Event MapEvent(EventAddViewModel eventDto);
 
         public Comment MapComment(CommentDto commentDto);
 

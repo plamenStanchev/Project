@@ -25,6 +25,7 @@
     using Scheduler.Services;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using System;
 
     public class Startup
     {
@@ -86,6 +87,7 @@
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IEventService, EventService>();
             services.AddSingleton<IMapper, Mapper>();
+            services.AddTransient<UriBuilder>();
 
         }
 

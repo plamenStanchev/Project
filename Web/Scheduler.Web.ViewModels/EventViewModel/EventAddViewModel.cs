@@ -18,13 +18,16 @@
         public string Description { get; set; }
 
         [Required]
-        public DateTime Start { get; set; }
+        public DateTime StartDate { get; set; }
 
         [Required]
-        public DateTime End { get; set; }
+        public DateTime EndDate { get; set; }
 
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime StartTime { get; set; }
+
+        [Required]
+        public DateTime EndTime { get; set; }
 
         [Url]
         public string Url { get; set; }
