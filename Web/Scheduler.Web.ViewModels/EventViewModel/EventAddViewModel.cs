@@ -12,6 +12,8 @@
         [MaxLength(20)]
         public string Name { get; set; }
 
+        public string Id { get; set; }
+
         public bool AllDay { get; set; }
 
         [MaxLength(500)]

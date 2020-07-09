@@ -1,6 +1,7 @@
 ﻿namespace Scheduler.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@
     using Microsoft.EntityFrameworkCore;
     using Scheduler.Data.Common.Repositories;
     using Scheduler.Data.Models;
+    using Scheduler.Services.Dtos;
     using Scheduler.Services.Interfaces;
     using Scheduler.Services.Mapping;
     using Scheduler.Web.ViewModels.UserViewModel;
@@ -63,6 +65,19 @@
             {
                 return null;
             }
+        }
+
+        public async Task<List<UserIdEmailsDto>> GetUserIds(IEnumerable<string> userEmails)
+        {
+            var userIdsAndEmail = await this.efDeletableRepositiry.All()
+                .Where(u => userEmails.Contains(u.Email))
+                .Select(e => new UserIdEmailsDto()
+                {
+                    Email = e.Email,
+                    Id = e.Id,
+                }).ToListAsync();
+
+            return userIdsAndEmail;
         }
     }
 }

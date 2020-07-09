@@ -1,18 +1,17 @@
 ﻿namespace Scheduler.Web.Controllers
 {
+    using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
-    using Scheduler.Web.ViewModels;
     using Scheduler.Web.ViewModels.UserViewModel;
-    using System.Reflection;
-    using System.Threading.Tasks;
 
     public class AccountController : BaseController
     {
-        private const string Url = "/";
+        private const string homeUrl = "/";
         private readonly IUserService userService;
         private readonly SignInManager<ApplicationUser> signInManager;
 
@@ -31,11 +30,11 @@
             if (appuser != null)
             {
                 await this.signInManager.SignInAsync(appuser, isPersistent: false);
-                return this.Redirect(Url);
+                return this.Redirect(homeUrl);
             }
             else
             {
-                return this.Redirect(Url);
+                return this.Redirect(homeUrl);
             }
         }
 
@@ -50,7 +49,7 @@
                 if (result.Succeeded)
                 {
                     await this.signInManager.SignInAsync(appUser, false);
-                    return this.Redirect(Url);
+                    return this.Redirect(homeUrl);
                 }
             }
             else

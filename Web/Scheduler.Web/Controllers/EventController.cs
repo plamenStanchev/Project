@@ -1,8 +1,5 @@
 ﻿namespace Scheduler.Web.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -10,9 +7,11 @@
     using Scheduler.Services.Interfaces;
     using Scheduler.Web.ViewModels.EventViewModel;
 
-    //TODo  move validation to Validation Service
+    //TODo  move validation to Validation Service 
     public class EventController : Controller
     {
+        private const string homeUrl = "/";
+        private string userId => this.userManager.GetUserId(this.User);
 
         private IEventService eventService;
         private UserManager<ApplicationUser> userManager;
@@ -24,13 +23,13 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(EventAddViewModel eventAddViewModel )
+        public async Task<IActionResult> Create(EventAddViewModel eventAddViewModel)
         {
             eventAddViewModel.OwnerId = this.userManager.GetUserId(this.User);
             var result = await this.eventService.CreateEvent(eventAddViewModel);
             if (result)
             {
-                return this.Redirect("/");
+                return this.Redirect(homeUrl);
             }
             else
             {
@@ -43,7 +42,7 @@
         {
             var @event = await this.eventService.GetEvent(evnetId);
 
-            return this.Redirect("/");
+            return this.Redirect(homeUrl);
             //return this.View(@event);
         }
 
@@ -56,7 +55,7 @@
                 return this.BadRequest();
             }
 
-            var events = await this.eventService.GetEventsFromTo(start, end);
+            var events = await this.eventService.GetEventsFromTo(start, end, this.userId);
 
             return this.Ok(events);
         }
@@ -64,13 +63,28 @@
         [HttpGet]
         public async Task<IActionResult> GetEventsForUser()
         {
-            var evetns = await this.eventService.GetAllEventsForUser(this.userManager.GetUserId(this.User));
+            var evetns = await this.eventService.GetAllEventsForUser(this.userId);
             return this.Ok(evetns);
         }
 
-        public IActionResult Edit()
+        [HttpPost]
+        public IActionResult UpdateEvent(EventAddViewModel eventAddViewModel)
         {
             return default;
+        }
+
+        [HttpPost]
+        public IActionResult UpdateParticipants(EventAddParticipantsViewModel eventParticipants)
+        {
+            return default;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(string eventId)
+        {
+            await this.eventService.DeleteEvent(eventId, this.userId);
+
+            return this.Redirect(homeUrl);
         }
     }
 }

@@ -5,9 +5,8 @@ namespace Scheduler.Data.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    using Scheduler.Data.Common.Models;
-
     using Microsoft.AspNetCore.Identity;
+    using Scheduler.Data.Common.Models;
 
     public class ApplicationUser : IdentityUser, IAuditInfo, IDeletableEntity
     {
@@ -41,7 +40,6 @@ namespace Scheduler.Data.Models
         [MinLength(3)]
         [MaxLength(30)]
         public string LastName { get; set; }
-
 
         public ICollection<Event> CreatedEvents { get; set; }
 

@@ -91,29 +91,52 @@
             return @event;
         }
 
-        public async Task<IEnumerable<Event>> GetEventsFromTo(string start, string end)
+        public async Task<IEnumerable<Event>> GetEventsFromTo(string start, string end, string userId)
         {
             var startDate = DateTime.Parse(start, null, System.Globalization.DateTimeStyles.RoundtripKind);
             var endDate = DateTime.Parse(end, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
-            var events = await this.efDeletableRepositiryEvent.All()
-                .Where(e => e.Start.CompareTo(startDate) >= 0
-                 || (e.End.CompareTo(endDate) <= 0
-                 && (e.IsDeleted == false)))
-                .ToListAsync();
+            var eventsUserPartisipitsIn = await this.GetAllEventsForUser(userId);
+
+
+            var events = eventsUserPartisipitsIn
+                .Where(e => (e.Start.CompareTo(startDate) >= 0
+                 || e.End.CompareTo(endDate) <= 0))
+                 .ToList();
 
             return events;
         }
 
-        public async Task DeleteEvent(string eventId)
+        public async Task DeleteEvent(string eventId, string userId)
         {
-            var @event = new Event()
-            {
-                Id = eventId,
-            };
+            var permission = this.efDeletableRepositiryEvent.All()
+                .Where(e => e.Id == eventId)
+                .FirstOrDefault(e => e.OwnerId == userId);
 
-            this.efDeletableRepositiryEvent.Delete(@event);
+            if (permission != null)
+            {
+                var @event = new Event()
+                {
+                    Id = eventId,
+                };
+                this.efDeletableRepositiryEvent.Delete(@event);
+                await this.efDeletableRepositiryEvent.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateEvent(EventAddViewModel eventAddViewModel)
+        {
+            var @event = this.mapper.MapEvent(eventAddViewModel);
+            @event.Id = eventAddViewModel.Id;
+
+            this.efDeletableRepositiryEvent.Update(@event);
+
             await this.efDeletableRepositiryEvent.SaveChangesAsync();
+        }
+
+        public Task UpdateParticipants(EventAddParticipantsViewModel eventParticipants)
+        {
+            throw new NotImplementedException();
         }
 
         private string BuildUrlForEvent(string paramId)
