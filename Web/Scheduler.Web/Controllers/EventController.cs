@@ -68,15 +68,17 @@
         }
 
         [HttpPost]
-        public IActionResult UpdateEvent(EventAddViewModel eventAddViewModel)
+        public async Task<IActionResult> UpdateEvent(EventAddViewModel eventAddViewModel)
         {
-            return default;
+           await this.eventService.UpdateEvent(eventAddViewModel);
+           return this.Redirect(homeUrl);
         }
 
-        [HttpPost]
-        public IActionResult UpdateParticipants(EventAddParticipantsViewModel eventParticipants)
+        [HttpGet]
+        public async Task<IActionResult> UpdateParticipants(EventAddParticipantsViewModel eventParticipants)
         {
-            return default;
+           await this.eventService.UpdateParticipants(eventParticipants);
+           return this.Redirect(homeUrl);
         }
 
         [HttpGet]

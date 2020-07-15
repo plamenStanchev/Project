@@ -3,14 +3,16 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
 
     using Scheduler.Data.Common.Repositories;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
     using Scheduler.Web.ViewModels.EventViewModel;
     using Scheduler.Services.Mapping;
-    using System.Collections.Generic;
     using Microsoft.EntityFrameworkCore;
+    using Z.EntityFramework.Plus;
+    using System.Linq.Expressions;
 
     // to Add loger
     public class EventService : IEventService
@@ -19,16 +21,19 @@
         private readonly IDeletableEntityRepository<Event> efDeletableRepositiryEvent;
         private readonly IMapper mapper;
         private readonly IRepository<ApplicationUserEvent> efRepositiryEventAppUser;
+        private readonly IUserService userService;
 
         public EventService(IDeletableEntityRepository<Event> efDeletableRepositiry, 
             IMapper mapper,
             IRepository<ApplicationUserEvent> repository,
-            UriBuilder uriBuilder)
+            UriBuilder uriBuilder,
+            IUserService userService)
         {
             this.efDeletableRepositiryEvent = efDeletableRepositiry;
             this.mapper = mapper;
             this.efRepositiryEventAppUser = repository;
             this.uriBuilder = uriBuilder;
+            this.userService = userService;
         }
 
         // todo RefactorNames
@@ -134,9 +139,47 @@
             await this.efDeletableRepositiryEvent.SaveChangesAsync();
         }
 
-        public Task UpdateParticipants(EventAddParticipantsViewModel eventParticipants)
+        public async Task UpdateParticipants(EventAddParticipantsViewModel eventParticipants)
         {
-            throw new NotImplementedException();
+            var participantsDetails = await this.userService.GetUserIds(eventParticipants.UersEmail);
+            var participantsInEvent = new List<ApplicationUserEvent>();
+            foreach (var pd in participantsDetails)
+            {
+                participantsInEvent.Add(new ApplicationUserEvent()
+                {
+                    ApplicationUserId = pd.Id,
+                    EventId = eventParticipants.EventId,
+                });
+            }
+
+            var predicate = this.BuildPredicate(participantsInEvent);
+
+            await this.efRepositiryEventAppUser
+                .All()
+                .Where(predicate)
+                .DeleteAsync();
+
+            await this.efRepositiryEventAppUser.SaveChangesAsync();
+
+            var usersInEvent = await this.efRepositiryEventAppUser.All()
+                .Where(ae => ae.EventId == eventParticipants.EventId)
+                .Select(ae => ae.ApplicationUserId)
+                .ToListAsync();
+
+            foreach (var user in participantsInEvent)
+            {
+                if (!usersInEvent.Contains(user.ApplicationUserId))
+                {
+                    await this.efRepositiryEventAppUser.AddAsync(new ApplicationUserEvent()
+                    {
+                        ApplicationUserId = user.ApplicationUserId,
+                        EventId = user.EventId,
+                    });
+                }
+            }
+
+            await this.efRepositiryEventAppUser.SaveChangesAsync();
+
         }
 
         private string BuildUrlForEvent(string paramId)
@@ -146,6 +189,21 @@
             this.uriBuilder.Scheme = "https";
             this.uriBuilder.Port = 44319;
             return this.uriBuilder.ToString();
+        }
+
+        private Expression<Func<ApplicationUserEvent, bool>> BuildPredicate(IEnumerable<ApplicationUserEvent> updateCollection)
+        {
+            var parameter = Expression.Parameter(typeof(ApplicationUserEvent));
+            var body = updateCollection
+                .Select(ap => Expression.AndAlso(
+                    Expression.NotEqual(Expression.Property(parameter, nameof(ap.ApplicationUserId)), Expression.Constant(ap.ApplicationUserId)),
+                    Expression.Equal(Expression.Property(parameter, nameof(ap.EventId)), Expression.Constant(ap.EventId))))
+                .Aggregate(Expression.And);
+
+            var predicate = Expression.Lambda<Func<ApplicationUserEvent, bool>>(body, parameter);
+
+            return predicate;
+
         }
     }
 }
