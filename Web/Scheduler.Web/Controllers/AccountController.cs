@@ -11,12 +11,10 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
     using Scheduler.Web.Infrastructure.Oidc;
     using Scheduler.Web.ViewModels.UserViewModel;
-    using SendGrid.Helpers.Mail;
 
     public class AccountController : BaseController
     {
@@ -35,6 +33,11 @@
         [AllowAnonymous]
         public async Task<IActionResult> Register(UserRegisterViewModel userViewModel)
         {
+            var modelState = this.TryValidateModel(userViewModel);
+            if (modelState == false)
+            {
+                return this.Redirect(homeUrl);
+            }
             var appuser = this.userService.Register(userViewModel).Result;
 
             if (appuser != null)
@@ -52,6 +55,12 @@
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginViewModel userViewModel)
         {
+            var modelState = this.TryValidateModel(userViewModel);
+            if (modelState == false)
+            {
+                return this.Redirect(homeUrl);
+            }
+
             var appUser = await this.userService.GetAppUser(userViewModel);
             if (appUser != null)
             {
@@ -70,7 +79,7 @@
             return default;
         }
 
-        public IActionResult ExternalLogin(string provider,string returnUrl)
+        public IActionResult ExternalLogin(string provider, string returnUrl)
         {
             string authenticationScheme = string.Empty;
 
@@ -126,9 +135,9 @@
             {
                 await this.LoginExternal(user, provider);
             }
+
             return this.Redirect(homeUrl);
         }
-
 
         [Authorize]
         public async Task<IActionResult> LogOut()
@@ -146,7 +155,6 @@
             var authenticationProperties = this.signInManager
                 .ConfigureExternalAuthenticationProperties(provider, homeUrl, appUser.Id);
             await this.signInManager.SignInAsync(appUser, authenticationProperties);
-
         }
     }
 }

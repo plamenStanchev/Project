@@ -33,7 +33,8 @@
         public async Task<ApplicationUser> GetAppUser(string id)
         {
             return await this.efDeletableRepositiry
-                .All().Where(u => u.Id == id)
+                .All().Where(u => u.Id == id
+                && u.IsDeleted == false)
                 .FirstOrDefaultAsync();
         }
 
@@ -55,7 +56,8 @@
         public async Task<ApplicationUser> GetAppUser(UserLoginViewModel userViewModel)
         {
             var user = await this.efDeletableRepositiry.All()
-                .Where(u => u.Email == userViewModel.Email && u.IsDeleted == false)
+                .Where(u => u.Email == userViewModel.Email 
+                && u.IsDeleted == false)
                 .FirstOrDefaultAsync();
             if (user != null)
             {
@@ -70,7 +72,8 @@
         public async Task<List<UserIdEmailsDto>> GetUserIds(IEnumerable<string> userEmails)
         {
             var userIdsAndEmail = await this.efDeletableRepositiry.All()
-                .Where(u => userEmails.Contains(u.Email))
+                .Where(u => userEmails.Contains(u.Email) 
+                && u.IsDeleted == false)
                 .Select(e => new UserIdEmailsDto()
                 {
                     Email = e.Email,
@@ -83,7 +86,8 @@
         public async Task<ApplicationUser> GetAppUserFromEmail(string email)
         {
             var applicationUser = await this.efDeletableRepositiry.All()
-                .FirstOrDefaultAsync(ap => ap.Email == email);
+                .FirstOrDefaultAsync(ap => ap.Email == email
+                && ap.IsDeleted == false);
 
             return applicationUser;
         }

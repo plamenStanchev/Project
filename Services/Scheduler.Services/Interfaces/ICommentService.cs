@@ -12,6 +12,6 @@
 
         public CommentDto GetComment(int commentId);
 
-        public Task EditComment(CommentDto comment);
+        public Task EditComment(CommentDto comment,int commentId);
     }
 }

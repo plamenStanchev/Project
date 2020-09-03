@@ -14,7 +14,8 @@
         private readonly IDeletableEntityRepository<Comment> efDeletableEntityRepository;
         private readonly IMapper mapper;
 
-        public CommentService(IDeletableEntityRepository<Comment> efDeletableEntityRepository,
+        public CommentService(
+            IDeletableEntityRepository<Comment> efDeletableEntityRepository,
             IMapper mapper)
         {
             this.efDeletableEntityRepository = efDeletableEntityRepository;
@@ -41,7 +42,7 @@
             await this.efDeletableEntityRepository.SaveChangesAsync();
         }
 
-        public async Task EditComment(CommentDto commentDto)
+        public async Task EditComment(CommentDto commentDto, int comentId)
         {
             var comment = this.mapper.MapComment(commentDto);
             this.efDeletableEntityRepository.Update(comment);
@@ -51,7 +52,8 @@
         public CommentDto GetComment(int commentId)
         {
             var comment = this.efDeletableEntityRepository.All()
-                 .FirstOrDefault(c => c.Id == commentId);
+                 .FirstOrDefault(c => c.Id == commentId
+                 && c.IsDeleted == false);
 
             return this.mapper.MapCommentDto(comment);
         }

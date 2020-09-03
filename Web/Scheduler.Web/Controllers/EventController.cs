@@ -1,25 +1,34 @@
 ﻿namespace Scheduler.Web.Controllers
 {
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore.Diagnostics;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
+    using Scheduler.Web.ViewModels.Comments;
     using Scheduler.Web.ViewModels.EventViewModel;
 
     //TODo  move validation to Validation Service 
-    public class EventController : Controller
+    public class EventController : BaseController
     {
         private const string homeUrl = "/";
+
         private string userId => this.userManager.GetUserId(this.User);
 
-        private IEventService eventService;
-        private UserManager<ApplicationUser> userManager;
+        private readonly IEventService eventService;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly ICommentService commentService;
 
-        public EventController(IEventService eventService, UserManager<ApplicationUser> userManager)
+        public EventController(
+            IEventService eventService,
+            UserManager<ApplicationUser> userManager,
+            ICommentService commentService)
         {
             this.eventService = eventService;
             this.userManager = userManager;
+            this.commentService = commentService;
         }
 
         [HttpPost]
@@ -87,6 +96,45 @@
             await this.eventService.DeleteEvent(eventId, this.userId);
 
             return this.Redirect(homeUrl);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateComment(CommentDto commentViewModel)
+        {
+            var modelState = this.TryValidateModel(commentViewModel);
+            if (modelState == false)
+            {
+                return this.Redirect(homeUrl);
+            }
+
+            var result = await this.commentService.AddComment(commentViewModel);
+
+            if (result == false)
+            {
+                return this.Redirect(homeUrl);
+            }
+
+            return await this.Details(commentViewModel.EventId);
+        }
+
+        public async Task<IActionResult> DeleteComment(int comentId,string eventId)
+        {
+           await this.commentService.DeleteComment(comentId);
+
+           return await this.Details(eventId);
+        }
+
+        public async Task<IActionResult> EditComent(CommentDto commentViewModel,int commentId,string eventId)
+        {
+            var modelState = this.TryValidateModel(commentViewModel);
+            if (modelState == false)
+            {
+                return this.Redirect(homeUrl);
+            }
+
+            await this.commentService.EditComment(commentViewModel, commentId);
+
+            return await this.Details(eventId);
         }
     }
 }

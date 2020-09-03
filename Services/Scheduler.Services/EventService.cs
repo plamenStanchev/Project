@@ -106,7 +106,8 @@
 
             var events = eventsUserPartisipitsIn
                 .Where(e => (e.Start.CompareTo(startDate) >= 0
-                 || e.End.CompareTo(endDate) <= 0))
+                 || e.End.CompareTo(endDate) <= 0)
+                 && e.IsDeleted == false)
                  .ToList();
 
             return events;
@@ -116,7 +117,7 @@
         {
             var permission = this.efDeletableRepositiryEvent.All()
                 .Where(e => e.Id == eventId)
-                .FirstOrDefault(e => e.OwnerId == userId);
+                .FirstOrDefault(e => e.OwnerId == userId && e.IsDeleted == false);
 
             if (permission != null)
             {
