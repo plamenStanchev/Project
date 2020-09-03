@@ -1,31 +1,25 @@
 ﻿namespace Scheduler.Web
 {
-    using System.Reflection;
+    using System;
 
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
     using Scheduler.Data;
     using Scheduler.Data.Common;
     using Scheduler.Data.Common.Repositories;
     using Scheduler.Data.Models;
     using Scheduler.Data.Repositories;
     using Scheduler.Data.Seeding;
+    using Scheduler.Services;
     using Scheduler.Services.Data;
+    using Scheduler.Services.Interfaces;
     using Scheduler.Services.Mapping;
     using Scheduler.Services.Messaging;
-    using Scheduler.Web.ViewModels;
-
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Scheduler.Services.Interfaces;
-    using Scheduler.Services;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using System;
+    using Scheduler.Web.ConfigureServicesExtensins;
 
     public class Startup
     {
@@ -39,41 +33,24 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(this.configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
                 .AddRoles<ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.Configure<CookiePolicyOptions>(
-                options =>
-                    {
-                        options.CheckConsentNeeded = context => true;
-                        options.MinimumSameSitePolicy = SameSiteMode.None;
-                    });
+            services.AddDataBase(this.configuration)
+                    .AddIdentetyOptions(this.configuration)
+                    .AddCookiPolicy(this.configuration)
+                    .AddControllersWithViewsExtension(this.configuration)
+                    .AddSingleton(this.configuration);
 
-            services.AddControllersWithViews(
-                options =>
-                    {
-                        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                    });
-            services.AddRazorPages();
-
-            services.AddControllersWithViews().AddJsonOptions(
-                options =>
-                {
-                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                });
-
-            services.AddSingleton(this.configuration);
-
-            services.Configure<IdentityOptions>(options =>
+            services.AddAuthentication().AddFacebook(optiions =>
             {
-                options.Password.RequireDigit = true;
-                options.Lockout.AllowedForNewUsers = true;
-                options.Lockout.MaxFailedAccessAttempts = 50;
-                options.User.RequireUniqueEmail = true;
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
+                optiions.AppId = this.configuration["Oidc:Facebook:ClientId"];
+                optiions.AppSecret = this.configuration["Oidc:Facebook:ClientSecret"];
+            }).AddGoogle(oprions =>
+            {
+                oprions.ClientSecret = this.configuration.GetValue<string>("Oidc:Google:ClientSecret");
+                oprions.ClientId = this.configuration.GetValue<string>("Oidc:Google:ClientId");
             });
 
             // Data repositories
@@ -88,7 +65,6 @@
             services.AddTransient<IEventService, EventService>();
             services.AddSingleton<IMapper, Mapper>();
             services.AddTransient<UriBuilder>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -79,5 +79,23 @@
 
             return userIdsAndEmail;
         }
+
+        public async Task<ApplicationUser> GetAppUserFromEmail(string email)
+        {
+            var applicationUser = await this.efDeletableRepositiry.All()
+                .FirstOrDefaultAsync(ap => ap.Email == email);
+
+            return applicationUser;
+        }
+
+        public async Task<ApplicationUser> RegisterExternal(UserRegisterViewModel userViewModel, IdentityUserLogin<string> userLogin)
+        {
+            var applicationUser = this.mapper.MapAppUser(userViewModel);
+
+            applicationUser.Logins.Add(userLogin);
+            await this.userManager.CreateAsync(applicationUser);
+
+            return applicationUser;
+        }
     }
 }
