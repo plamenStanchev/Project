@@ -1,0 +1,53 @@
+﻿@model Scheduler.Web.ViewModels.Comments.InputCommentDto
+@inject Microsoft.AspNetCore.Identity.UserManager<Scheduler.Data.Models.ApplicationUser> manager
+    <head>
+        @*<link rel="stylesheet" href="~/assets/css/form-elements.css" />
+        <link rel="stylesheet" href="~/assets/css/style.css">*@
+    </head>
+
+<h4>Create Commnet</h4>
+@{Model.AuthorId = @manager.GetUserId(this.User);}
+<hr />
+<div class="row" id="CreationalFrom">
+    <div class="col-md-4">
+        <form asp-action="CreateCommnetForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" id="NameInputFild">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="ContentInputFild">
+                <label asp-for="Content" class="control-label"></label>
+                <textarea asp-for="@Model.Content" class="form-control"></textarea>
+                <span asp-validation-for="@Model.Content"></span>
+            </div>
+            <div class="form-group" disabled="disabled">
+                <label asp-for="AuthorId" class="control-label"></label>
+                <input asp-for="@Model.AuthorId"  value="@Model.AuthorId"class="form-control"  />
+                <span asp-validation-for="AuthorId"  class="text-danger"></span>
+            </div>
+            <div class="form-group" disabled ="disabled">
+                <label asp-for="EventId" class="control-label"></label>
+                <input asp-for="@Model.EventId"  value="@Model.EventId"class="form-control"  />
+            </div>
+            <div class="form-group">
+                <input type="submit" asp-controller="Event" asp-action="CreateComment" value="Create" class="btn btn-outline-dark" ></input>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .CreationalFrom{
+
+    }
+    #NameInputFild {
+        width: 200px ;
+    }
+    #ContentInputFild{
+        width: 200px;
+    }
+  
+
+</style>

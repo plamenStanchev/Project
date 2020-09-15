@@ -11,8 +11,12 @@
 
         public Event MapEvent(EventAddViewModel eventDto);
 
-        public Comment MapComment(CommentDto commentDto);
+        public Comment MapComment(InputCommentDto commentDto);
 
-        public CommentDto MapCommentDto(Comment comment);
+        public InputCommentDto MapCommentDto(Comment comment);
+
+        public EventDetailsViewModel MapToEvetnDetailsDto(Event @event);
+
+        public OutputCommentDto MapToOutputCommentDto(Comment comment);
     }
 }

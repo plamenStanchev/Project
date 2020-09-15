@@ -1,13 +1,13 @@
 ﻿namespace Scheduler.Data.Models
 {
-    public class ApplicationUserEvent
+    public class ApplicationUserFreands
     {
         public string ApplicationUserId { get; set; }
 
         public ApplicationUser ApplicationUser { get; set; }
 
-        public string EventId { get; set; }
+        public string FriandId { get; set; }
 
-        public Event Event { get; set; }
+        public ApplicationUser Friend { get; set; }
     }
 }

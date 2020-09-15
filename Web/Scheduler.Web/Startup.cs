@@ -15,7 +15,6 @@
     using Scheduler.Data.Repositories;
     using Scheduler.Data.Seeding;
     using Scheduler.Services;
-    using Scheduler.Services.Data;
     using Scheduler.Services.Interfaces;
     using Scheduler.Services.Mapping;
     using Scheduler.Services.Messaging;
@@ -59,11 +58,11 @@
 
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
-            services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IEventService, EventService>();
             services.AddSingleton<IMapper, Mapper>();
             services.AddTransient<UriBuilder>();
+            services.AddTransient<ICommentService, CommentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

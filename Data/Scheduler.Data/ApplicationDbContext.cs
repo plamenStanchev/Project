@@ -6,11 +6,10 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Scheduler.Data.Common.Models;
-    using Scheduler.Data.Models;
-
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
+    using Scheduler.Data.Common.Models;
+    using Scheduler.Data.Models;
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
@@ -29,6 +28,8 @@
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Event> Events { get; set; }
+
+        public DbSet<ApplicationUserFreands> ApplicationUserFreands { get; set; }
 
         public DbSet<ApplicationUserEvent> ApplicationUserEvents { get; set; }
 
@@ -78,7 +79,15 @@
                 .HasForeignKey(aue => aue.ApplicationUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<ApplicationUserEvent>().HasKey(aue => new { aue.ApplicationUserId, aue.EventId });
+            builder.Entity<ApplicationUser>().HasMany(ap => ap.Friands)
+                .WithOne(a => a.ApplicationUser)
+                .HasForeignKey(a => a.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ApplicationUserEvent>()
+                .HasKey(aue => new { aue.ApplicationUserId, aue.EventId });
+            builder.Entity<ApplicationUserFreands>()
+                .HasKey(auf => new { auf.ApplicationUserId, auf.FriandId });
 
             // Needed for Identity models configuration
             base.OnModelCreating(builder);

@@ -56,7 +56,7 @@
         public async Task<ApplicationUser> GetAppUser(UserLoginViewModel userViewModel)
         {
             var user = await this.efDeletableRepositiry.All()
-                .Where(u => u.Email == userViewModel.Email 
+                .Where(u => u.Email == userViewModel.Email
                 && u.IsDeleted == false)
                 .FirstOrDefaultAsync();
             if (user != null)
@@ -72,7 +72,7 @@
         public async Task<List<UserIdEmailsDto>> GetUserIds(IEnumerable<string> userEmails)
         {
             var userIdsAndEmail = await this.efDeletableRepositiry.All()
-                .Where(u => userEmails.Contains(u.Email) 
+                .Where(u => userEmails.Contains(u.Email)
                 && u.IsDeleted == false)
                 .Select(e => new UserIdEmailsDto()
                 {

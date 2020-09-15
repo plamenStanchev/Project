@@ -19,6 +19,7 @@ namespace Scheduler.Data.Models
             this.Comments = new HashSet<Comment>();
             this.ApplicationUserEvents = new HashSet<ApplicationUserEvent>();
             this.CreatedEvents = new HashSet<Event>();
+            this.Friands = new HashSet<ApplicationUserFreands>();
         }
 
         // Audit info
@@ -46,6 +47,8 @@ namespace Scheduler.Data.Models
         public ICollection<ApplicationUserEvent> ApplicationUserEvents { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
+
+        public ICollection<ApplicationUserFreands> Friands { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 

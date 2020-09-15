@@ -38,6 +38,7 @@
             {
                 return this.Redirect(homeUrl);
             }
+
             var appuser = this.userService.Register(userViewModel).Result;
 
             if (appuser != null)

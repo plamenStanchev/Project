@@ -1,8 +1,9 @@
 ﻿namespace Scheduler.Data.Configurations
 {
-    using Scheduler.Data.Models;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+    using Scheduler.Data.Models;
 
     public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
     {

@@ -1,35 +1,39 @@
 ﻿namespace Scheduler.Web.Controllers
 {
+    using System.Linq;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Authorization;
+
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore.Diagnostics;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
+    using Scheduler.Services.Mapping;
     using Scheduler.Web.ViewModels.Comments;
     using Scheduler.Web.ViewModels.EventViewModel;
 
-    //TODo  move validation to Validation Service 
+    //TODo  move validation to Validation Service
     public class EventController : BaseController
     {
         private const string homeUrl = "/";
 
-        private string userId => this.userManager.GetUserId(this.User);
-
         private readonly IEventService eventService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICommentService commentService;
+        private readonly IMapper mapper;
 
         public EventController(
             IEventService eventService,
             UserManager<ApplicationUser> userManager,
-            ICommentService commentService)
+            ICommentService commentService,
+            IMapper mapper)
         {
             this.eventService = eventService;
             this.userManager = userManager;
             this.commentService = commentService;
+            this.mapper = mapper;
         }
+
+        private string userId => this.userManager.GetUserId(this.User);
 
         [HttpPost]
         public async Task<IActionResult> Create(EventAddViewModel eventAddViewModel)
@@ -38,7 +42,7 @@
             var result = await this.eventService.CreateEvent(eventAddViewModel);
             if (result)
             {
-                return this.Redirect(homeUrl);
+                return await this.Details(eventAddViewModel.Id);
             }
             else
             {
@@ -47,12 +51,16 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(string evnetId)
+        public async Task<IActionResult> Details(string eventId)
         {
-            var @event = await this.eventService.GetEvent(evnetId);
+            var @event = await this.eventService.GetEvent(eventId);
+            var eventDto = this.mapper.MapToEvetnDetailsDto(@event);
 
-            return this.Redirect(homeUrl);
-            //return this.View(@event);
+            eventDto.Participants = @event.AtendingUsers
+                .Select(au => string.Concat(au.ApplicationUser.FirstName + " " + au.ApplicationUser.LastName)).ToList();
+            eventDto.Participants = new string[] { "Some Name", "Some otherName", "OneMore TestName", "Last TestName" };
+            eventDto.Comments = await this.commentService.GetCommentsForEvent(eventId);
+            return this.View(eventDto);
         }
 
         [HttpGet]
@@ -99,7 +107,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateComment(CommentDto commentViewModel)
+        public async Task<IActionResult> CreateComment(InputCommentDto commentViewModel)
         {
             var modelState = this.TryValidateModel(commentViewModel);
             if (modelState == false)
@@ -117,14 +125,14 @@
             return await this.Details(commentViewModel.EventId);
         }
 
-        public async Task<IActionResult> DeleteComment(int comentId,string eventId)
+        public async Task<IActionResult> DeleteComment(int comentId, string eventId)
         {
            await this.commentService.DeleteComment(comentId);
 
            return await this.Details(eventId);
         }
 
-        public async Task<IActionResult> EditComent(CommentDto commentViewModel,int commentId,string eventId)
+        public async Task<IActionResult> EditComent(InputCommentDto commentViewModel, int commentId, string eventId)
         {
             var modelState = this.TryValidateModel(commentViewModel);
             if (modelState == false)

@@ -3,8 +3,6 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    using Scheduler.Data.Models;
-
     public class EventAddViewModel
     {
         [Required]

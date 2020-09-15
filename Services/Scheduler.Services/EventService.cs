@@ -1,18 +1,18 @@
 ﻿namespace Scheduler.Services
 {
     using System;
-    using System.Linq;
-    using System.Threading.Tasks;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
 
+    using Microsoft.EntityFrameworkCore;
     using Scheduler.Data.Common.Repositories;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
-    using Scheduler.Web.ViewModels.EventViewModel;
     using Scheduler.Services.Mapping;
-    using Microsoft.EntityFrameworkCore;
+    using Scheduler.Web.ViewModels.EventViewModel;
     using Z.EntityFramework.Plus;
-    using System.Linq.Expressions;
 
     // to Add loger
     public class EventService : IEventService
@@ -23,7 +23,8 @@
         private readonly IRepository<ApplicationUserEvent> efRepositiryEventAppUser;
         private readonly IUserService userService;
 
-        public EventService(IDeletableEntityRepository<Event> efDeletableRepositiry, 
+        public EventService(
+            IDeletableEntityRepository<Event> efDeletableRepositiry,
             IMapper mapper,
             IRepository<ApplicationUserEvent> repository,
             UriBuilder uriBuilder,
@@ -91,9 +92,10 @@
             var @event = await this.efDeletableRepositiryEvent.All()
                 .Where(e => e.Id == eventId
                 && e.IsDeleted == false)
-                 .FirstOrDefaultAsync();
+                .Select(e => new { @event = e, owner = e.Owner })
+                .FirstOrDefaultAsync();
 
-            return @event;
+            return @event.@event;
         }
 
         public async Task<IEnumerable<Event>> GetEventsFromTo(string start, string end, string userId)
@@ -102,7 +104,6 @@
             var endDate = DateTime.Parse(end, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
             var eventsUserPartisipitsIn = await this.GetAllEventsForUser(userId);
-
 
             var events = eventsUserPartisipitsIn
                 .Where(e => (e.Start.CompareTo(startDate) >= 0
@@ -180,7 +181,6 @@
             }
 
             await this.efRepositiryEventAppUser.SaveChangesAsync();
-
         }
 
         private string BuildUrlForEvent(string paramId)
@@ -204,7 +204,6 @@
             var predicate = Expression.Lambda<Func<ApplicationUserEvent, bool>>(body, parameter);
 
             return predicate;
-
         }
     }
 }

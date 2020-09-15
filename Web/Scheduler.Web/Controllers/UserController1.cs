@@ -1,9 +1,7 @@
 ﻿namespace Scheduler.Web.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Scheduler.Data.Models;
@@ -14,7 +12,7 @@
         private readonly IUserService userService;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public UserController1(IUserService userService,UserManager<ApplicationUser> userManager)
+        public UserController1(IUserService userService, UserManager<ApplicationUser> userManager)
         {
             this.userManager = userManager;
             this.userService = userService;
@@ -32,7 +30,7 @@
             var friendForAdd = await this.userService.GetAppUserFromEmail(email);
             var curentUserId = this.userManager.GetUserId(this.User);
             var curentUser = await this.userService.GetAppUser(curentUserId);
-           
+
             if (friendForAdd == null)
             {
                 return this.BadRequest();
@@ -46,6 +44,5 @@
         {
             return await this.Freands();
         }
-
     }
 }

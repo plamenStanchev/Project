@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class CommentDto
+    public class InputCommentDto
     {
         [Required]
         [MaxLength(50)]

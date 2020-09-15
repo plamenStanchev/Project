@@ -21,7 +21,7 @@
             };
         }
 
-        public Comment MapComment(CommentDto commentDto)
+        public Comment MapComment(InputCommentDto commentDto)
         {
             return new Comment()
             {
@@ -32,9 +32,9 @@
             };
         }
 
-        public CommentDto MapCommentDto(Comment comment)
+        public InputCommentDto MapCommentDto(Comment comment)
         {
-            return new CommentDto()
+            return new InputCommentDto()
             {
                 Name = comment.Name,
                 Content = comment.Content,
@@ -72,5 +72,30 @@
             };
         }
 
+        public EventDetailsViewModel MapToEvetnDetailsDto(Event @event)
+        {
+            return new EventDetailsViewModel
+            {
+                Id = @event.Id,
+                Name = @event.Name,
+                Date = @event.Date,
+                Description = @event.Description,
+                Start = @event.Start,
+                End = @event.End,
+                OwnerName = @event.Owner.FirstName + " " + @event.Owner.LastName,
+            };
+        }
+
+        public OutputCommentDto MapToOutputCommentDto(Comment comment)
+        {
+            return new OutputCommentDto
+            {
+                Name = comment.Name,
+                Content = comment.Content,
+                EventId = comment.EventId,
+                AuthorName = comment.Author.FirstName + " " + comment.Author.LastName,
+                CreatedOn = comment.CreatedOn,
+            };
+        }
     }
 }

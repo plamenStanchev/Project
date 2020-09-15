@@ -2,9 +2,8 @@
 {
     using System.Diagnostics;
 
-    using Scheduler.Web.ViewModels;
-
     using Microsoft.AspNetCore.Mvc;
+    using Scheduler.Web.ViewModels;
 
     public class HomeController : BaseController
     {
