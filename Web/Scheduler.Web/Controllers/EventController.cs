@@ -15,6 +15,7 @@
     public class EventController : BaseController
     {
         private const string homeUrl = "/";
+        private const string ActionNameDetails = "Details";
 
         private readonly IEventService eventService;
         private readonly UserManager<ApplicationUser> userManager;
@@ -122,7 +123,7 @@
                 return this.Redirect(homeUrl);
             }
 
-            return await this.Details(commentViewModel.EventId);
+            return this.RedirectToActionPermanent(actionName: ActionNameDetails, commentViewModel.EventId);
         }
 
         public async Task<IActionResult> DeleteComment(int comentId, string eventId)

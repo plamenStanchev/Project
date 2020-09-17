@@ -22,14 +22,14 @@
                 <textarea asp-for="@Model.Content" class="form-control"></textarea>
                 <span asp-validation-for="@Model.Content"></span>
             </div>
-            <div class="form-group" disabled="disabled">
+            <div class="form-group"  hidden="hidden">
                 <label asp-for="AuthorId" class="control-label"></label>
-                <input asp-for="@Model.AuthorId"  value="@Model.AuthorId"class="form-control"  />
+                <input asp-for="@Model.AuthorId"  value="@Model.AuthorId"class="form-control"/>
                 <span asp-validation-for="AuthorId"  class="text-danger"></span>
             </div>
-            <div class="form-group" disabled ="disabled">
+            <div class="form-group"  hidden="hidden">
                 <label asp-for="EventId" class="control-label"></label>
-                <input asp-for="@Model.EventId"  value="@Model.EventId"class="form-control"  />
+                <input asp-for="@Model.EventId"  value="@Model.EventId"class="form-control"/>
             </div>
             <div class="form-group">
                 <input type="submit" asp-controller="Event" asp-action="CreateComment" value="Create" class="btn btn-outline-dark" ></input>

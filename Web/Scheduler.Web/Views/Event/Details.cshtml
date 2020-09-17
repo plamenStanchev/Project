@@ -50,13 +50,16 @@
     <div class="column3">
         <h4 class="position-relative">@Html.DisplayNameFor(model => model.Comments)</h4>
         <hr />
-        @foreach (var comment in Model.Comments)
-        {
-            <div class="comment_body">
-                @comment.Content
-            </div>
+        <dl>
+            @foreach (var comment in Model.Comments)
+             {
 
-        }
+                <dt>@comment.AuthorName</dt>
+                <dd>@comment.Content</dd>
+
+             }
+        </dl>
+        
     </div>
     <div class="column4">
         @{ var dataInputModel = new Scheduler.Web.ViewModels.Comments.InputCommentDto()
@@ -117,68 +120,5 @@
         }
       
     
-    .comment_block {
-	width: 65%;
-	height: 100%;
-
-	margin: 0 auto;
-	padding: 10px;
-
-	
-
-		.input_comment {
-			display: inline-block;
-			vertical-align: middle;
-
-			margin-left: 10px;
-			width: calc(100% - 75px);
-
-			input[type="text"] {
-				width: 100%;
-
-				font-family: $LATO;
-				font-weight: 300;
-				font-size: 1.3rem;
-
-				padding: 10px;
-
-				border: none;
-				border-bottom: 2px solid lighten($GREY, 15%);
-
-				&:focus {
-					outline: none;
-					border-bottom: 2px solid lighten($GREY, 10%);
-				}
-			}
-		}
-	}
-
-	.new_comment {
-		width: 100%;
-		height: auto;
-		padding: 20px 0;
-		border-top: 1px solid lighten($GREY, 10%);
-
-		.user_comment {
-			list-style-type: none;
-		}
-
-		.comment_body {
-			display: inline-block;
-			vertical-align: middle;
-
-			width: calc(100% - 75px);
-        min-height: 65px;
-			margin-left: 10px;
-			padding: 5px 10px;
-			font-size: .9rem;
-			color: #555;
-			background-color: $WHITE;
-			border-bottom: 2px solid lighten($GREY, 15%);
-			.comment_details {
-				display: inline-block;
-				vertical-align: middle;
-				width: 70%;
-				text-align: left;
-			}
+  
 </style>
