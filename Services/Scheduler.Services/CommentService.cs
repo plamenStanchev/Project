@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Microsoft.EntityFrameworkCore;
     using Scheduler.Data.Common.Repositories;
     using Scheduler.Data.Models;
@@ -46,18 +47,23 @@
         public async Task EditComment(InputCommentDto commentDto, int comentId)
         {
             var comment = this.mapper.MapComment(commentDto);
+            comment.Id = comentId;
+
             this.efDeletableEntityRepository.Update(comment);
             await this.efDeletableEntityRepository.SaveChangesAsync();
         }
 
-        public OutputCommentDto GetComment(int commentId)
+        public async Task<OutputCommentDto> GetComment(int commentId)
         {
-            var comment = this.efDeletableEntityRepository.All()
+            var comment = await this.efDeletableEntityRepository.All()
                 .Where(c => c.Id == commentId
                  && c.IsDeleted == false)
                 .Select(c => new { commnet = c, authro = c.Author })
-                .FirstOrDefault();
-
+                .FirstOrDefaultAsync();
+            if (comment == null)
+            {
+                return null;
+            }
             return this.mapper.MapToOutputCommentDto(comment.commnet);
         }
 

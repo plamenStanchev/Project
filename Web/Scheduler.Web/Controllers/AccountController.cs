@@ -62,7 +62,7 @@
                 return this.Redirect(homeUrl);
             }
 
-            var appUser = await this.userService.GetAppUser(userViewModel);
+            var appUser = await this.userService.GetAppUserFromEmail(userViewModel.Email);
             if (appUser != null)
             {
                 var result = await this.signInManager.CheckPasswordSignInAsync(appUser, userViewModel.Password, false);

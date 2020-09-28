@@ -92,10 +92,15 @@
             var @event = await this.efDeletableRepositiryEvent.All()
                 .Where(e => e.Id == eventId
                 && e.IsDeleted == false)
-                .Select(e => new { @event = e, owner = e.Owner })
+                .Select(e => new { @eventInner = e, owner = e.Owner })
                 .FirstOrDefaultAsync();
 
-            return @event.@event;
+            if (@event is null)
+            {
+                return await Task.FromResult<Event>(null);
+            }
+
+            return @event.eventInner;
         }
 
         public async Task<IEnumerable<Event>> GetEventsFromTo(string start, string end, string userId)

@@ -73,7 +73,8 @@
 
 <div>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id}) |
-    <a asp-controller="Home" asp-action="Index">Back</a>
+    <a asp-controller="Home" asp-action="Index">Back</a> |
+    <a asp-controller="Event" asp-action="DeleteEvent">DeleteEvent</a>
 </div>
 
 <style>
@@ -119,6 +120,4 @@
              box-flex: 1.0;
         }
       
-    
-  
 </style>

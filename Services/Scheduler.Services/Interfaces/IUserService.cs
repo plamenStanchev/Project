@@ -20,7 +20,6 @@
 
         public Task<ApplicationUser> RegisterExternal(UserRegisterViewModel userViewModel, IdentityUserLogin<string> userLogin);
 
-        public Task<ApplicationUser> GetAppUser(UserLoginViewModel userViewModel);
 
     }
 }

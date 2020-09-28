@@ -100,7 +100,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(string eventId)
+        public async Task<IActionResult> DeleteEvent(string eventId)
         {
             await this.eventService.DeleteEvent(eventId, this.userId);
 

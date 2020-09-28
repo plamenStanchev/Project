@@ -11,7 +11,7 @@
 
         public Task DeleteComment(int commentId);
 
-        public OutputCommentDto GetComment(int commentId);
+        public Task<OutputCommentDto> GetComment(int commentId);
 
         public Task EditComment(InputCommentDto comment, int commentId);
 

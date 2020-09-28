@@ -7,12 +7,12 @@
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
 
-    public class UserController1 : Controller
+    public class UserController : Controller
     {
         private readonly IUserService userService;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public UserController1(IUserService userService, UserManager<ApplicationUser> userManager)
+        public UserController(IUserService userService, UserManager<ApplicationUser> userManager)
         {
             this.userManager = userManager;
             this.userService = userService;
