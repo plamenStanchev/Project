@@ -1,36 +1,43 @@
 ﻿namespace Scheduler.Web.ViewModels.UserViewModel
 {
-    using System.ComponentModel.DataAnnotations;
-
-    using Scheduler.Data.Models;
+    using FluentValidation;
 
     public class UserRegisterViewModel
     {
-        [Required]
-        [MaxLength(50)]
-        [MinLength(3)]
         public string FirstName { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        [MinLength(3)]
         public string LastName { get; set; }
 
-        [Required]
-        [EmailAddress]
-        [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [MinLength(6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class UserRegisterValidator : AbstractValidator<UserRegisterViewModel>
+    {
+        public UserRegisterValidator()
+        {
+            this.RuleFor(u => u.FirstName)
+                .NotEmpty()
+                .NotNull()
+                .Length(3, 50);
+            this.RuleFor(u => u.LastName)
+                .NotEmpty()
+                .NotNull()
+                .Length(3, 50);
+            this.RuleFor(u => u.Email)
+                .NotNull()
+                .NotEmpty()
+                .EmailAddress(FluentValidation.Validators.EmailValidationMode.AspNetCoreCompatible);
+            this.RuleFor(u => u.Password)
+                .NotEmpty()
+                .NotNull()
+                .Length(6, 100);
+            this.RuleFor(u => u.ConfirmPassword)
+                .NotEmpty()
+                .NotNull();
+        }
     }
 }

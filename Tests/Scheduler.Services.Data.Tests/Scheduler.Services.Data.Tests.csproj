@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Scheduler.Data\Scheduler.Data.csproj" />
-    <ProjectReference Include="..\..\Services\Scheduler.Services.Data\Scheduler.Services.Data.csproj" />
     <ProjectReference Include="..\..\Services\Scheduler.Services\Scheduler.Services.csproj" />
   </ItemGroup>
 

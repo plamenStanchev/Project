@@ -37,8 +37,6 @@
     <ProjectReference Include="..\..\Data\Scheduler.Data.Common\Scheduler.Data.Common.csproj" />
     <ProjectReference Include="..\..\Data\Scheduler.Data.Models\Scheduler.Data.Models.csproj" />
     <ProjectReference Include="..\..\Data\Scheduler.Data\Scheduler.Data.csproj" />
-    <ProjectReference Include="..\..\Services\Scheduler.Services.Data\Scheduler.Services.Data.csproj" />
-    <ProjectReference Include="..\..\Services\Scheduler.Services.Mapping\Scheduler.Services.Mapping.csproj" />
     <ProjectReference Include="..\..\Services\Scheduler.Services.Messaging\Scheduler.Services.Messaging.csproj" />
     <ProjectReference Include="..\..\Services\Scheduler.Services\Scheduler.Services.csproj" />
   </ItemGroup>

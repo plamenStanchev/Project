@@ -1,16 +1,25 @@
 ﻿namespace Scheduler.Web.ViewModels.UserViewModel
 {
-    using System.ComponentModel.DataAnnotations;
+    using FluentValidation;
 
     public class UserLoginViewModel
     {
-
-        [Required]
-        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [Required]
-        [DataType(DataType.Password)]
         public string Password { get; set; }
+    }
+
+    public class UserLoginValidator : AbstractValidator<UserLoginViewModel>
+    {
+        public UserLoginValidator()
+        {
+            this.RuleFor(u => u.Email)
+                .NotEmpty()
+                .NotNull()
+                .EmailAddress(FluentValidation.Validators.EmailValidationMode.AspNetCoreCompatible);
+            this.RuleFor(u => u.Password)
+                .NotNull()
+                .NotEmpty();
+        }
     }
 }

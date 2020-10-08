@@ -1,14 +1,11 @@
 ﻿namespace Scheduler.Web.ViewModels.EventViewModel
 {
     using System;
-    using System.ComponentModel.DataAnnotations;
 
     public class EventUpdateViewModel
     {
-        [Required]
         public string Id { get; set; }
 
-        [Required]
         public string OwnerId { get; set; }
 
         public string Name { get; set; }

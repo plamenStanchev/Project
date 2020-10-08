@@ -1,22 +1,36 @@
 ﻿namespace Scheduler.Web.ViewModels.Comments
 {
-    using System.ComponentModel.DataAnnotations;
+    using FluentValidation;
 
     public class InputCommentDto
     {
-        [Required]
-        [MaxLength(50)]
         public string Name { get; set; }
 
-        [Required]
-        [MaxLength(90)]
         public string Content { get; set; }
 
-        [Required]
         public string AuthorId { get; set; }
 
-        [Required]
         public string EventId { get; set; }
+    }
 
+    public class ImputComentValidator : AbstractValidator<InputCommentDto>
+    {
+        public ImputComentValidator()
+        {
+            this.RuleFor(c => c.Name)
+                .NotEmpty()
+                .NotNull()
+                .Length(3, 90);
+            this.RuleFor(c => c.Content)
+                .NotEmpty()
+                .NotNull()
+                .Length(3, 9);
+            this.RuleFor(c => c.AuthorId)
+                .NotNull()
+                .NotEmpty();
+            this.RuleFor(c => c.EventId)
+                .NotNull()
+                .NotEmpty();
+        }
     }
 }

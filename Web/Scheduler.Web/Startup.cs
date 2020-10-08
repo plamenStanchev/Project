@@ -1,7 +1,5 @@
 ﻿namespace Scheduler.Web
 {
-    using System;
-
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
@@ -14,10 +12,6 @@
     using Scheduler.Data.Models;
     using Scheduler.Data.Repositories;
     using Scheduler.Data.Seeding;
-    using Scheduler.Services;
-    using Scheduler.Services.Interfaces;
-    using Scheduler.Services.Mapping;
-    using Scheduler.Services.Messaging;
     using Scheduler.Web.ConfigureServicesExtensins;
 
     public class Startup
@@ -38,7 +32,7 @@
             services.AddDataBase(this.configuration)
                     .AddIdentetyOptions(this.configuration)
                     .AddCookiPolicy(this.configuration)
-                    .AddControllersWithViewsExtension(this.configuration)
+                    .AddControllersWithViewsExtension(this.configuration, typeof(Startup).Assembly)
                     .AddSingleton(this.configuration);
 
             services.AddAuthentication().AddFacebook(optiions =>
@@ -57,12 +51,10 @@
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             // Application services
-            services.AddTransient<IEmailSender, NullMessageSender>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IEventService, EventService>();
-            services.AddSingleton<IMapper, Mapper>();
-            services.AddTransient<UriBuilder>();
-            services.AddTransient<ICommentService, CommentService>();
+            services.AddApplicationServices(this.configuration);
+
+            // Application validators
+            services.AddValidators(this.configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

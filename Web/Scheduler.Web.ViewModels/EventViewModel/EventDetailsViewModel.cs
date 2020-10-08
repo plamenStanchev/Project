@@ -1,9 +1,9 @@
 ﻿namespace Scheduler.Web.ViewModels.EventViewModel
 {
-    using Scheduler.Web.ViewModels.Comments;
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
+
+    using Scheduler.Web.ViewModels.Comments;
 
     public class EventDetailsViewModel
     {
@@ -12,7 +12,6 @@
             this.Participants = new HashSet<string>();
         }
 
-        [Required]
         public string Id { get; set; }
 
         public string OwnerName { get; set; }

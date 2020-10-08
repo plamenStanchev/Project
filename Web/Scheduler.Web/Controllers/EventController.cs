@@ -5,18 +5,19 @@
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Routing;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
     using Scheduler.Services.Mapping;
     using Scheduler.Web.ViewModels.Comments;
     using Scheduler.Web.ViewModels.EventViewModel;
 
-    //TODo  move validation to Validation Service
+    // TODo  move validation to Validation Service
     public class EventController : BaseController
     {
         private const string homeUrl = "/";
         private const string ActionNameDetails = "Details";
-
+        private const string ControllerName = "Event";
         private readonly IEventService eventService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICommentService commentService;
@@ -43,7 +44,7 @@
             var result = await this.eventService.CreateEvent(eventAddViewModel);
             if (result)
             {
-                return await this.Details(eventAddViewModel.Id);
+                return this.Redirect(homeUrl);
             }
             else
             {
@@ -117,13 +118,12 @@
             }
 
             var result = await this.commentService.AddComment(commentViewModel);
-
             if (result == false)
             {
                 return this.Redirect(homeUrl);
             }
 
-            return this.RedirectToActionPermanent(actionName: ActionNameDetails, commentViewModel.EventId);
+            return this.RedirectToAction(actionName: ActionNameDetails, ControllerName, routeValues: new RouteValueDictionary() { { "eventId", commentViewModel.EventId } });
         }
 
         public async Task<IActionResult> DeleteComment(int comentId, string eventId)

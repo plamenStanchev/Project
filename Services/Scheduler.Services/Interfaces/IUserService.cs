@@ -20,6 +20,6 @@
 
         public Task<ApplicationUser> RegisterExternal(UserRegisterViewModel userViewModel, IdentityUserLogin<string> userLogin);
 
-
+        public Task<bool> AddRole(ApplicationUser applicationUser, string newRoleName);
     }
 }

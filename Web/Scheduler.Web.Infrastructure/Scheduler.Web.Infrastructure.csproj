@@ -22,8 +22,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Data\Scheduler.Data.Common\Scheduler.Data.Common.csproj" />
-  </ItemGroup>
-
 </Project>

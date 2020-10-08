@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Scheduler.Data.Models\Scheduler.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Scheduler.Common\Scheduler.Common.csproj" />
     <ProjectReference Include="..\..\Web\Scheduler.Web.ViewModels\Scheduler.Web.ViewModels.csproj" />
     <ProjectReference Include="..\Scheduler.Services.Mapping\Scheduler.Services.Mapping.csproj" />
   </ItemGroup>

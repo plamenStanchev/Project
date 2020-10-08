@@ -50,7 +50,8 @@
             string endDate,
             string endTime)
         {
-            var model = new EventAddViewModel() {
+            var model = new EventAddViewModel()
+            {
                 Description = descriptionm,
                 StartDate = DateTime.Parse(startDate),
                 StartTime = DateTime.ParseExact(startTime, "mm-ss", CultureInfo.InvariantCulture),
@@ -92,7 +93,7 @@
         [InlineData("1234", 1)]
         [InlineData("12345", 2)]
         [InlineData("SomeInvalidIncurentCase", 0)]
-        public async Task ShudGetAllEventsForUser(string appUserId,int expectedResult)
+        public async Task ShudGetAllEventsForUser(string appUserId, int expectedResult)
         {
             var data = new List<ApplicationUserEvent>()
             {
@@ -118,7 +119,6 @@
                 },
                 new ApplicationUserEvent()
                 {
-
                     ApplicationUserId = "12345",
                     EventId = "123456",
                     Event = new Event()
@@ -129,7 +129,6 @@
                 },
                 new ApplicationUserEvent()
                 {
-
                     ApplicationUserId = "12345",
                     EventId = "1234567",
                     Event = new Event()
@@ -163,7 +162,6 @@
                     Name = "SomeName1",
                     IsDeleted = false,
                     Owner = new ApplicationUser(),
-
                 },
                 new Event()
                 {

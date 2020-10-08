@@ -4,9 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
+    using FluentValidation;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using Scheduler.Common;
     using Scheduler.Data.Common.Repositories;
     using Scheduler.Data.Models;
     using Scheduler.Services.Dtos;
@@ -19,15 +20,21 @@
         private readonly IDeletableEntityRepository<ApplicationUser> efDeletableRepositiry;
         private readonly IMapper mapper;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly RoleManager<ApplicationRole> roleManager;
+        private readonly IValidator<UserRegisterViewModel> validator;
 
         public UserService(
             IDeletableEntityRepository<ApplicationUser> efDeletableEntityRepository,
             UserManager<ApplicationUser> userManager,
-            IMapper mapper)
+            IMapper mapper,
+            RoleManager<ApplicationRole> roleManager,
+            IValidator<UserRegisterViewModel> validator)
         {
             this.userManager = userManager;
             this.efDeletableRepositiry = efDeletableEntityRepository;
             this.mapper = mapper;
+            this.roleManager = roleManager;
+            this.validator = validator;
         }
 
         public async Task<ApplicationUser> GetAppUser(string id)
@@ -40,11 +47,23 @@
 
         public async Task<ApplicationUser> Register(UserRegisterViewModel userViewModel)
         {
+            var validateReslt = this.validator.Validate(userViewModel);
+            if (!validateReslt.IsValid)
+            {
+                return null;
+            }
+
             var appuser = this.mapper.MapAppUser(userViewModel);
 
-            var result = await this.userManager.CreateAsync(appuser, userViewModel.Password);
-            if (result.Succeeded)
+            var resultUser = await this.userManager.CreateAsync(appuser, userViewModel.Password);
+            var resultRole = await this.AddRole(appuser, GlobalConstants.MemberRoleName);
+            if (resultUser.Succeeded)
             {
+                if (resultRole == false)
+                {
+                    return null;
+                }
+
                 return appuser;
             }
             else
@@ -77,12 +96,43 @@
 
         public async Task<ApplicationUser> RegisterExternal(UserRegisterViewModel userViewModel, IdentityUserLogin<string> userLogin)
         {
+            var validateReslt = this.validator.Validate(userViewModel);
+            if (!validateReslt.IsValid)
+            {
+                return null;
+            }
+
             var applicationUser = this.mapper.MapAppUser(userViewModel);
 
             applicationUser.Logins.Add(userLogin);
             await this.userManager.CreateAsync(applicationUser);
 
             return applicationUser;
+        }
+
+        public async Task<bool> AddRole(ApplicationUser applicationUser, string newRoleName)
+        {
+            if (applicationUser == null || newRoleName == null)
+            {
+                return false;
+            }
+
+            var role = await this.roleManager.FindByNameAsync(newRoleName);
+            if (role != null)
+            {
+                var result = await this.userManager.AddToRoleAsync(applicationUser, role.Name);
+
+                if (result.Succeeded == false)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
