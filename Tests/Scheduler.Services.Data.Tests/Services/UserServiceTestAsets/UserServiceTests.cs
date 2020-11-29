@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+
     using FluentValidation;
     using Microsoft.AspNetCore.Identity;
     using MockQueryable.Moq;
@@ -157,7 +158,6 @@
         [Fact]
         public async Task ShudChangeUserRole()
         {
-
             var roleAdmin = new ApplicationRole()
             {
                 Id = "5",
@@ -200,7 +200,6 @@
                     var returnResult = this.RoleFindNameInMemorySetup(value);
                     return returnResult;
                 });
-
         }
 
         private void SetUpAllMethodInRepo()
@@ -260,7 +259,6 @@
 
             var someStoper = new ApplicationRole();
             return returnResult;
-
         }
     }
 }
