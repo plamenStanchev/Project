@@ -121,16 +121,12 @@
 
         public async Task DeleteEvent(string eventId, string userId)
         {
-            var permission = this.efDeletableRepositiryEvent.All()
+            var @event = this.efDeletableRepositiryEvent.AllAsNoTracking()
                 .Where(e => e.Id == eventId)
                 .FirstOrDefault(e => e.OwnerId == userId && e.IsDeleted == false);
 
-            if (permission != null)
+            if (@event != null)
             {
-                var @event = new Event()
-                {
-                    Id = eventId,
-                };
                 this.efDeletableRepositiryEvent.Delete(@event);
                 await this.efDeletableRepositiryEvent.SaveChangesAsync();
             }
