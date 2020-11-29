@@ -7,6 +7,7 @@
     using FluentValidation;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
     using Scheduler.Common;
     using Scheduler.Data.Common.Repositories;
     using Scheduler.Data.Models;
@@ -133,6 +134,11 @@
             {
                 return false;
             }
+        }
+
+        public void Log(string methodHitName,string mesage)
+        {
+
         }
     }
 }
