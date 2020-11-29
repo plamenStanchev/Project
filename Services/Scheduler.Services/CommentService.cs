@@ -64,6 +64,7 @@
             {
                 return null;
             }
+
             return this.mapper.MapToOutputCommentDto(comment.commnet);
         }
 
