@@ -1,6 +1,9 @@
-﻿@model Scheduler.Web.ViewModels.EventViewModel.EventDetailsViewModel
+﻿@using Scheduler.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@model Scheduler.Web.ViewModels.EventViewModel.EventDetailsViewModel
 
-<div id="contrainer"class="box">
+<div id="contrainer" class="box">
     <div class="column1">
         <h4 class="position-relative">Event Details</h4>
         <hr />
@@ -44,7 +47,7 @@
             @foreach (var name in Model.Participants)
             {
                 <dd>@name</dd>
-            } 
+            }
         </dl>
     </div>
     <div class="column3">
@@ -52,29 +55,29 @@
         <hr />
         <dl>
             @foreach (var comment in Model.Comments)
-             {
+            {
 
                 <dt>@comment.AuthorName</dt>
                 <dd>@comment.Content</dd>
 
-             }
+            }
         </dl>
-        
+
     </div>
     <div class="column4">
         @{ var dataInputModel = new Scheduler.Web.ViewModels.Comments.InputCommentDto()
             {
                 EventId = Model.Id,
             };}
-        @{await Html.RenderPartialAsync(@"Comment/CreateCommnetForm", dataInputModel) ;}
+        @{await Html.RenderPartialAsync(@"Comment/CreateCommnetForm", dataInputModel);}
     </div>
 </div>
 
 
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id}) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     <a asp-controller="Home" asp-action="Index">Back</a> |
-    <a asp-controller="Event" asp-action="DeleteEvent">DeleteEvent</a>
+    <a asp-controller="Event" asp-action="Delete" asp-route-eventId="@Model.Id" asp-route-userId="@UserManager.GetUserId(this.User)">DeleteEvent</a>
 </div>
 
 <style>
@@ -96,8 +99,7 @@
             -moz-box-flex: 1.0; /* Firefox */
             -webkit-box-flex: 1.0; /* Safari and Chrome */
             -ms-flex: 1.0; /* Internet Explorer 10 */
-             box-flex: 1.0;
-
+            box-flex: 1.0;
         }
 
         .box .column2 {
@@ -113,11 +115,11 @@
             -ms-flex: 1.0; /* Internet Explorer 10 */
             box-flex: 1.0;
         }
+
         .box .column4 {
             -moz-box-flex: 1.0; /* Firefox */
             -webkit-box-flex: 1.0; /* Safari and Chrome */
             -ms-flex: 1.0; /* Internet Explorer 10 */
-             box-flex: 1.0;
+            box-flex: 1.0;
         }
-      
 </style>
