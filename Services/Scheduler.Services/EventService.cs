@@ -12,6 +12,7 @@
     using Scheduler.Services.Interfaces;
     using Scheduler.Services.Mapping;
     using Scheduler.Web.ViewModels.EventViewModel;
+    using Scheduler.Web.ViewModels.UserViewModel;
     using Z.EntityFramework.Plus;
 
     // to Add loger
@@ -20,43 +21,21 @@
         private readonly UriBuilder uriBuilder;
         private readonly IDeletableEntityRepository<Event> efDeletableRepositiryEvent;
         private readonly IMapper mapper;
-        private readonly IRepository<ApplicationUserEvent> efRepositiryEventAppUser;
-        private readonly IUserService userService;
+        private readonly IParticipantsService participantsService;
 
         public EventService(
             IDeletableEntityRepository<Event> efDeletableRepositiry,
             IMapper mapper,
-            IRepository<ApplicationUserEvent> repository,
             UriBuilder uriBuilder,
-            IUserService userService)
+            IParticipantsService participantsService)
         {
             this.efDeletableRepositiryEvent = efDeletableRepositiry;
             this.mapper = mapper;
-            this.efRepositiryEventAppUser = repository;
             this.uriBuilder = uriBuilder;
-            this.userService = userService;
+            this.participantsService = participantsService;
         }
 
         // todo RefactorNames
-        public async Task<bool> AddUserToEvent(string userId, string eventId)
-        {
-            var eventAppUser = new ApplicationUserEvent()
-            {
-                ApplicationUserId = userId,
-                EventId = eventId,
-            };
-
-            var result = this.efRepositiryEventAppUser
-                .AddAsync(eventAppUser);
-
-            if (result.IsCompletedSuccessfully)
-            {
-                await this.efRepositiryEventAppUser.SaveChangesAsync();
-                return true;
-            }
-
-            return false;
-        }
 
         public async Task<bool> CreateEvent(EventAddViewModel eventAdd)
         {
@@ -68,7 +47,7 @@
             {
                 await this.efDeletableRepositiryEvent.SaveChangesAsync();
 
-                await this.AddUserToEvent(@event.OwnerId, @event.Id);
+                await this.participantsService.AddUserToEventAsync(@event.OwnerId, @event.Id);
 
                 return true;
             }
@@ -78,10 +57,8 @@
 
         public async Task<IEnumerable<Event>> GetAllEventsForUser(string userId)
         {
-            var events = await this.efRepositiryEventAppUser.All()
-                .Where(ae => ae.ApplicationUserId == userId
-                && ae.Event.IsDeleted == false)
-                .Select(ae => ae.Event)
+            var events = await this.efDeletableRepositiryEvent.All()
+                .Where(e => e.AtendingUsers.Any(u => u.ApplicationUser.Id == userId))
                 .ToListAsync();
 
             return events;
@@ -142,48 +119,6 @@
             await this.efDeletableRepositiryEvent.SaveChangesAsync();
         }
 
-        public async Task UpdateParticipants(EventAddParticipantsViewModel eventParticipants)
-        {
-            var participantsDetails = await this.userService.GetUserIds(eventParticipants.UersEmail);
-            var participantsInEvent = new List<ApplicationUserEvent>();
-            foreach (var pd in participantsDetails)
-            {
-                participantsInEvent.Add(new ApplicationUserEvent()
-                {
-                    ApplicationUserId = pd.Id,
-                    EventId = eventParticipants.EventId,
-                });
-            }
-
-            var predicate = this.BuildPredicate(participantsInEvent);
-
-            await this.efRepositiryEventAppUser
-                .All()
-                .Where(predicate)
-                .DeleteAsync();
-
-            await this.efRepositiryEventAppUser.SaveChangesAsync();
-
-            var usersInEvent = await this.efRepositiryEventAppUser.All()
-                .Where(ae => ae.EventId == eventParticipants.EventId)
-                .Select(ae => ae.ApplicationUserId)
-                .ToListAsync();
-
-            foreach (var user in participantsInEvent)
-            {
-                if (!usersInEvent.Contains(user.ApplicationUserId))
-                {
-                    await this.efRepositiryEventAppUser.AddAsync(new ApplicationUserEvent()
-                    {
-                        ApplicationUserId = user.ApplicationUserId,
-                        EventId = user.EventId,
-                    });
-                }
-            }
-
-            await this.efRepositiryEventAppUser.SaveChangesAsync();
-        }
-
         private string BuildUrlForEvent(string paramId)
         {
             this.uriBuilder.Path = "Event/Details";
@@ -191,20 +126,6 @@
             this.uriBuilder.Scheme = "https";
             this.uriBuilder.Port = 44319;
             return this.uriBuilder.ToString();
-        }
-
-        private Expression<Func<ApplicationUserEvent, bool>> BuildPredicate(IEnumerable<ApplicationUserEvent> updateCollection)
-        {
-            var parameter = Expression.Parameter(typeof(ApplicationUserEvent));
-            var body = updateCollection
-                .Select(ap => Expression.AndAlso(
-                    Expression.NotEqual(Expression.Property(parameter, nameof(ap.ApplicationUserId)), Expression.Constant(ap.ApplicationUserId)),
-                    Expression.Equal(Expression.Property(parameter, nameof(ap.EventId)), Expression.Constant(ap.EventId))))
-                .Aggregate(Expression.And);
-
-            var predicate = Expression.Lambda<Func<ApplicationUserEvent, bool>>(body, parameter);
-
-            return predicate;
         }
     }
 }

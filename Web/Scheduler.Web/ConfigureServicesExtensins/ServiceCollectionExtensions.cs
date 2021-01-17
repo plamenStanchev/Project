@@ -12,6 +12,9 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Scheduler.Data;
+    using Scheduler.Data.Common;
+    using Scheduler.Data.Common.Repositories;
+    using Scheduler.Data.Repositories;
     using Scheduler.Services;
     using Scheduler.Services.Interfaces;
     using Scheduler.Services.Mapping;
@@ -50,9 +53,24 @@
             => services.AddDbContext<ApplicationDbContext>(
                  options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+        public static IServiceCollection AddOidcProviders(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.AddAuthentication().AddFacebook(optiions =>
+            {
+                optiions.AppId = configuration["Oidc:Facebook:ClientId"];
+                optiions.AppSecret = configuration["Oidc:Facebook:ClientSecret"];
+            }).AddGoogle(oprions =>
+            {
+                oprions.ClientSecret = configuration.GetValue<string>("Oidc:Google:ClientSecret");
+                oprions.ClientId = configuration.GetValue<string>("Oidc:Google:ClientId");
+            });
+            return services;
+        }
+
         public static IServiceCollection AddControllersWithViewsExtension(
            this IServiceCollection services,
-           IConfiguration configuration,
            Assembly assembly)
         {
             services.AddControllersWithViews(
@@ -74,8 +92,7 @@
         }
 
         public static IServiceCollection AddValidators(
-            this IServiceCollection services,
-            IConfiguration configuration)
+            this IServiceCollection services)
         {
             services.AddTransient<IValidator<InputCommentDto>, ImputComentValidator>()
                     .AddTransient<IValidator<EventAddViewModel>, EventAddValidator>()
@@ -92,9 +109,13 @@
             services.AddTransient<IUserService, UserService>()
                     .AddTransient<IEventService, EventService>()
                     .AddTransient<ICommentService, CommentService>()
+                    .AddTransient<IParticipantsService,ParticipantsService>()
                     .AddSingleton<IMapper, Mapper>()
                     .AddTransient<UriBuilder>()
-                    .AddTransient<Services.Messaging.IEmailSender, NullMessageSender>();
+                    .AddTransient<Services.Messaging.IEmailSender, NullMessageSender>()
+                    .AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>))
+                    .AddScoped(typeof(IRepository<>), typeof(EfRepository<>))
+                    .AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             return services;
         }

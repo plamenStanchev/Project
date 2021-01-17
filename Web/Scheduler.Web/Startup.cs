@@ -7,10 +7,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Scheduler.Data;
-    using Scheduler.Data.Common;
-    using Scheduler.Data.Common.Repositories;
     using Scheduler.Data.Models;
-    using Scheduler.Data.Repositories;
     using Scheduler.Data.Seeding;
     using Scheduler.Web.ConfigureServicesExtensins;
 
@@ -32,29 +29,16 @@
             services.AddDataBase(this.configuration)
                     .AddIdentetyOptions(this.configuration)
                     .AddCookiPolicy(this.configuration)
-                    .AddControllersWithViewsExtension(this.configuration, typeof(Startup).Assembly)
-                    .AddSingleton(this.configuration);
-
-            services.AddAuthentication().AddFacebook(optiions =>
-            {
-                optiions.AppId = this.configuration["Oidc:Facebook:ClientId"];
-                optiions.AppSecret = this.configuration["Oidc:Facebook:ClientSecret"];
-            }).AddGoogle(oprions =>
-            {
-                oprions.ClientSecret = this.configuration.GetValue<string>("Oidc:Google:ClientSecret");
-                oprions.ClientId = this.configuration.GetValue<string>("Oidc:Google:ClientId");
-            });
-
-            // Data repositories
-            services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-            services.AddScoped<IDbQueryRunner, DbQueryRunner>();
+                    .AddControllersWithViewsExtension(typeof(Startup).Assembly)
+                    .AddSingleton(this.configuration)
+                    .AddOidcProviders(this.configuration)
+                    .AddDatabaseDeveloperPageExceptionFilter();
 
             // Application services
             services.AddApplicationServices(this.configuration);
 
             // Application validators
-            services.AddValidators(this.configuration);
+            services.AddValidators();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,7 +55,7 @@
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {

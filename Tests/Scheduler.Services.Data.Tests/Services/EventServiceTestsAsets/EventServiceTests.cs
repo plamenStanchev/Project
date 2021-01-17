@@ -19,24 +19,21 @@
     {
         public Mock<IDeletableEntityRepository<Event>> MockeEventRepository;
         public IMapper Mapper;
-        public Mock<IRepository<ApplicationUserEvent>> MockApplicationUserEventRepository;
-        public Mock<IUserService> MockUserService;
         public UriBuilder UriBuilder;
         public IEventService eventService;
+        public Mock<IParticipantsService> MockParticipantsService;
 
         public EventServiceTests()
         {
             this.MockeEventRepository = new Mock<IDeletableEntityRepository<Event>>();
             this.Mapper = new Mapper();
             this.UriBuilder = new UriBuilder();
-            this.MockApplicationUserEventRepository = new Mock<IRepository<ApplicationUserEvent>>();
-            this.MockUserService = new Mock<IUserService>();
+            this.MockParticipantsService = new Mock<IParticipantsService>();
             this.eventService = new EventService(
                                                  this.MockeEventRepository.Object,
                                                  this.Mapper,
-                                                 this.MockApplicationUserEventRepository.Object,
                                                  this.UriBuilder,
-                                                 this.MockUserService.Object);
+                                                 this.MockParticipantsService.Object);
         }
 
         [Theory]
@@ -63,29 +60,11 @@
 
             this.MockeEventRepository.Setup(a => a.AddAsync(It.IsAny<Event>()))
                 .Returns(Task.CompletedTask);
-            this.MockApplicationUserEventRepository.Setup(a => a.AddAsync(It.IsAny<ApplicationUserEvent>()))
-                .Returns(Task.CompletedTask);
+            this.MockParticipantsService.Setup(p => p.AddUserToEventAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
 
             var result = await this.eventService.CreateEvent(model);
 
-            Assert.True(result);
-        }
-
-        [Theory]
-        [InlineData("1234", "12345")]
-        [InlineData("SomeId", "SomeOther")]
-        public async Task ShudAddUserToEvent(string userId, string eventId)
-        {
-            var userEvent = new ApplicationUserEvent()
-            {
-                ApplicationUserId = userId,
-                EventId = eventId,
-            };
-
-            this.MockApplicationUserEventRepository.Setup(a => a.AddAsync(It.IsAny<ApplicationUserEvent>()))
-                .Returns(Task.CompletedTask);
-
-            var result = await this.eventService.AddUserToEvent(userId, eventId);
             Assert.True(result);
         }
 
@@ -138,9 +117,9 @@
                     },
                 },
             };
-
-            var mockDbset = data.AsQueryable().BuildMockDbSet();
-            this.MockApplicationUserEventRepository.Setup(a => a.All())
+            var mockDbset = data.AsQueryable().Select(e => e.Event)
+               .BuildMockDbSet();
+            this.MockeEventRepository.Setup(a => a.All())
                 .Returns(mockDbset.Object);
 
             var result = await this.eventService.GetAllEventsForUser(appUserId);

@@ -16,12 +16,10 @@
 
         public Task<bool> CreateEvent(EventAddViewModel eventAdd);
 
-        public Task<bool> AddUserToEvent(string userId, string eventId);
+        public Task UpdateEvent(EventAddViewModel eventAddViewModel);
 
         public Task DeleteEvent(string eventId, string userId);
 
-        public Task UpdateEvent(EventAddViewModel eventAddViewModel);
 
-        public Task UpdateParticipants(EventAddParticipantsViewModel eventParticipants);
     }
 }

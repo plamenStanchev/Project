@@ -49,19 +49,23 @@
                 <dd>@name</dd>
             }
         </dl>
+        <div>
+            <a asp-controller="Participant" asp-action="Get" asp-route-eventId="@Model.Id">Edit</a>
+        </div>
     </div>
     <div class="column3">
         <h4 class="position-relative">@Html.DisplayNameFor(model => model.Comments)</h4>
         <hr />
         <dl>
             @foreach (var comment in Model.Comments)
-            {
+             {
 
                 <dt>@comment.AuthorName</dt>
                 <dd>@comment.Content</dd>
-
-            }
+             }
         </dl>
+        <div>
+        </div>
 
     </div>
     <div class="column4">

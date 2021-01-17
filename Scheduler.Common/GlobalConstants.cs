@@ -7,5 +7,7 @@
         public const string AdministratorRoleName = "Administrator";
 
         public const string MemberRoleName = "Member";
+
+        public const string HomeUrl = "/";
     }
 }

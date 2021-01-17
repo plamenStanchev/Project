@@ -5,6 +5,7 @@
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Scheduler.Common;
     using Scheduler.Data.Models;
     using Scheduler.Services.Interfaces;
     using Scheduler.Services.Mapping;
@@ -13,7 +14,7 @@
     // TODo  move validation to Validation Service
     public class EventController : BaseController
     {
-        private const string homeUrl = "/";
+
         private readonly IEventService eventService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICommentService commentService;
@@ -40,7 +41,7 @@
             var result = await this.eventService.CreateEvent(eventAddViewModel);
             if (result)
             {
-                return this.Redirect(homeUrl);
+                return this.Redirect(GlobalConstants.HomeUrl);
             }
             else
             {
@@ -83,24 +84,17 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateEvent(EventAddViewModel eventAddViewModel)
+        public async Task<IActionResult> UpdateEvent([FromBody]EventAddViewModel eventAddViewModel)
         {
            await this.eventService.UpdateEvent(eventAddViewModel);
-           return this.Redirect(homeUrl);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> UpdateParticipants(EventAddParticipantsViewModel eventParticipants)
-        {
-           await this.eventService.UpdateParticipants(eventParticipants);
-           return this.Redirect(homeUrl);
+           return this.Redirect(GlobalConstants.HomeUrl);
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(string eventId, string userId)
         {
            await this.eventService.DeleteEvent(eventId, userId);
-           return this.Redirect(homeUrl);
+           return this.Redirect(GlobalConstants.HomeUrl);
         }
     }
 }
